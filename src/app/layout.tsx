@@ -3,6 +3,8 @@ import {Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
+import NextAuthSessionProvider from "@/Providers/NextAuthSessionProvider";
+import { Toaster } from "react-hot-toast";
 
 // ✅ Configure Poppins font
 const poppins = Poppins({
@@ -25,13 +27,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light">
+      <NextAuthSessionProvider>
       <body
         className={`${poppins.variable} antialiased`}
       >
         <Navbar/>
+        <Toaster/>
         {children}
         <Footer/>
       </body>
+      </NextAuthSessionProvider>
     </html>
   );
 }
