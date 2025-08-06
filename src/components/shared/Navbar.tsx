@@ -4,16 +4,32 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { Menu } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { RootState } from "@/redux/store";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
+  const user = useSelector((state: RootState) => state.user);
+  const router = useRouter();
+  // console.log(user)
+
+  const handleDashboardRedirect = () => {
+    if (user.role === "recruiter") {
+      router.push("/recruiter-dashboard");
+    } else if (user.role === "job_seeker") {
+      router.push("/find-jobs");
+    } else {
+      router.push("/");
+    }
+  };
 
   return (
     <nav className="flex items-center justify-between p-4 shadow-md">
@@ -24,11 +40,14 @@ export default function Navbar() {
 
       {/* Desktop Menu */}
       <div className="hidden md:flex flex-1 justify-center gap-6 text-lg font-medium">
-        <Link href="/jobs">Jobs</Link>
+        <Link href="/">Home</Link>
+        <Link href="/find-jobs">Jobs</Link>
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
         {!isLoading && session?.user && (
-          <Link href="/dashboard">Dashboard</Link>
+          <button onClick={handleDashboardRedirect} className="cursor-pointer">
+            Dashboard
+          </button>
         )}
       </div>
 
@@ -45,7 +64,7 @@ export default function Navbar() {
               width={40}
               height={40}
               alt="user"
-              priority // optional: improve loading
+              priority
             />
             <button
               onClick={() => signOut()}
@@ -109,14 +128,17 @@ export default function Navbar() {
                 <Link href="/">Home</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
+                <Link href="/find-jobs">Jobs</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link href="/about">About</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/jobs">Jobs</Link>
+                <Link href="/contact">Contact</Link>
               </DropdownMenuItem>
               {!isLoading && session?.user && (
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                <DropdownMenuItem onClick={handleDashboardRedirect}>
+                  Dashboard
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

@@ -1,5 +1,4 @@
 "use server";
-
 import dbConnect, { collectionNamesObj } from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
 
@@ -7,22 +6,30 @@ interface RegisterPayload {
   email?: string;
   password?: string;
   username?: string;
+  role?: "job_seeker" | "recruiter";
 }
 
-export const resgisterUser = async (payload: RegisterPayload) => {
-  // console.log(payload);
-  const usersCollection = dbConnect(collectionNamesObj.usersCollection);
-  //validation
-  const { username, email, password } = payload;
+export const registerUser = async (payload: RegisterPayload) => {
+  const { username, email, password, role = "job_seeker" } = payload;
   if (!username || !email || !password) return null;
-  const user = await usersCollection.findOne({ email: payload.email });
-  if (!user) {
-    const hashedPass = await bcrypt.hash(password, 10);
-    payload.password = hashedPass;
-    const result = await usersCollection.insertOne(payload);
-    // console.log(result);
-    const { insertedId, acknowledged } = result;
-    return { insertedId: insertedId.toString(), acknowledged };
+
+  const usersCollection = dbConnect(collectionNamesObj.usersCollection);
+  const existingUser = await usersCollection.findOne({ email });
+
+  if (!existingUser) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = {
+      username,
+      email,
+      password: hashedPassword,
+      role,
+    };
+    const result = await usersCollection.insertOne(newUser);
+    return {
+      insertedId: result.insertedId.toString(),
+      acknowledged: result.acknowledged,
+    };
   }
+
   return null;
 };
