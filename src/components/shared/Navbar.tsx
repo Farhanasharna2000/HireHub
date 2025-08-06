@@ -32,8 +32,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 shadow-md">
-      {/* Logo */}
+    <nav className="sticky top-0 z-50 bg-white shadow-md  py-6">
+<div className="container mx-auto px-6 flex items-center justify-between">
+        {/* Logo */}
       <Link href="/" className="font-bold text-xl">
         HireHub
       </Link>
@@ -145,6 +146,7 @@ export default function Navbar() {
           </DropdownMenu>
         </div>
       </div>
+</div>
     </nav>
   );
 }
