@@ -32,121 +32,146 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md  py-6">
-<div className="container mx-auto px-6 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-white shadow-md  py-4">
+      <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-      <Link href="/" className="font-bold text-xl">
-        HireHub
-      </Link>
+        <Link
+          href="/"
+          className="font-bold text-xl md:text-3xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent "
+        >
+          HireHub
+        </Link>
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex flex-1 justify-center gap-6 text-lg font-medium">
-        <Link href="/">Home</Link>
-        <Link href="/find-jobs">Jobs</Link>
-        <Link href="/about">About</Link>
-        <Link href="/contact">Contact</Link>
-        {!isLoading && session?.user && (
-          <button onClick={handleDashboardRedirect} className="cursor-pointer">
-            Dashboard
-          </button>
-        )}
-      </div>
-
-      {/* Auth Actions - Desktop */}
-      <div className="hidden md:flex items-center gap-4">
-        {!isLoading && session?.user ? (
-          <>
-            <Image
-              className="rounded-full border p-1"
-              src={
-                session.user.image ||
-                "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
-              }
-              width={40}
-              height={40}
-              alt="user"
-              priority
-            />
-            <button
-              onClick={() => signOut()}
-              className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
-              type="button"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <Link
-            href="/login"
-            className="px-3 py-1 bg-blue-600 text-white rounded"
-          >
-            Sign In
+        {/* Desktop Menu */}
+        <div className="hidden md:flex flex-1 justify-center gap-6 text-lg font-medium">
+          <Link href="/" className="hover:text-blue-600">
+            Home
           </Link>
-        )}
-      </div>
+          <Link href="/find-jobs" className="hover:text-blue-600">
+            Jobs
+          </Link>
+          <Link href="/about" className="hover:text-blue-600">
+            About
+          </Link>
+          <Link href="/contact" className="hover:text-blue-600">
+            Contact
+          </Link>
+          {!isLoading && session?.user && (
+            <button
+              onClick={handleDashboardRedirect}
+              className="cursor-pointer hover:text-blue-600"
+            >
+              Dashboard
+            </button>
+          )}
+        </div>
 
-      {/* Mobile Menu */}
-      <div className="md:hidden">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-4">
-            {!isLoading && session?.user ? (
-              <>
-                <Image
-                  className="rounded-full border p-1"
-                  src={
-                    session.user.image ||
-                    "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
-                  }
-                  width={40}
-                  height={40}
-                  alt="user"
-                  priority
-                />
-                <button
-                  onClick={() => signOut()}
-                  className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
-                  type="button"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+        {/* Auth Actions - Desktop */}
+        <div className="hidden md:flex items-center gap-4">
+          {!isLoading && session?.user ? (
+            <>
+              <Image
+                className="rounded-full border p-1"
+                src={
+                  session.user.image ||
+                  "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
+                }
+                width={40}
+                height={40}
+                alt="user"
+                priority
+              />
+              <button
+                onClick={() => signOut()}
+                className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
+                type="button"
               >
-                Sign In
-              </Link>
-            )}
-          </div>
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="px-3 py-1 md:py-[6px] bg-blue-600 hover:bg-blue-700 text-white rounded"
+            >
+              Sign In
+            </Link>
+          )}
+        </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Menu className="w-6 h-6 cursor-pointer" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 mt-2">
-              <DropdownMenuItem asChild>
-                <Link href="/">Home</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/find-jobs">Jobs</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/about">About</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/contact">Contact</Link>
-              </DropdownMenuItem>
-              {!isLoading && session?.user && (
-                <DropdownMenuItem onClick={handleDashboardRedirect}>
-                  Dashboard
-                </DropdownMenuItem>
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
+              {!isLoading && session?.user ? (
+                <>
+                  <Image
+                    className="rounded-full border p-1"
+                    src={
+                      session.user.image ||
+                      "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
+                    }
+                    width={40}
+                    height={40}
+                    alt="user"
+                    priority
+                  />
+                  <button
+                    onClick={() => signOut()}
+                    className="px-3 py-1 bg-red-500 text-white rounded cursor-pointer"
+                    type="button"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                >
+                  Sign In
+                </Link>
               )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Menu className="w-6 h-6 cursor-pointer" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 mt-2">
+                <DropdownMenuItem asChild>
+                  <Link href="/" className="hover:text-blue-600">
+                    Home
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/find-jobs" className="hover:text-blue-600">
+                    Jobs
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/about" className="hover:text-blue-600">
+                    About
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/contact" className="hover:text-blue-600">
+                    Contact
+                  </Link>
+                </DropdownMenuItem>
+                {!isLoading && session?.user && (
+                  <DropdownMenuItem
+                    onClick={handleDashboardRedirect}
+                    className="hover:text-blue-600"
+                  >
+                    Dashboard
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
-</div>
     </nav>
   );
 }
