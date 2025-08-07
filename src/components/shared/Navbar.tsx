@@ -19,7 +19,7 @@ export default function Navbar() {
   const isLoading = status === "loading";
   const user = useSelector((state: RootState) => state.user);
   const router = useRouter();
-  // console.log(user)
+  console.log(user)
 
   const handleDashboardRedirect = () => {
     if (user.role === "recruiter") {

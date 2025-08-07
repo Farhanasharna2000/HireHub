@@ -18,6 +18,8 @@ export const config = {
     matcher: [
         '/dashboard',
          '/recruiter-dashboard',
+         '/post-job',
+
         //  '/checkout/:path*'
         ],
   }

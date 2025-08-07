@@ -67,24 +67,43 @@ export const authConfig: NextAuthOptions = {
 
       const usersCollection = dbConnect(collectionNamesObj.usersCollection);
 
-      // Check if user exists by providerAccountId
-      let existingUser = await usersCollection.findOne({ providerAccountId });
+      let existingUser = await usersCollection.findOne({
+        $or: [{ providerAccountId }, { email: user_email }],
+      });
 
       if (!existingUser) {
-        // Create new user with defaults
+        // Create new user
         const newUser = {
           providerAccountId,
           provider,
           email: user_email,
           image,
           username: name,
-          role: "job_seeker", // default role for Google users
+          role: "job_seeker", // default role
         };
         const insertResult = await usersCollection.insertOne(newUser);
         existingUser = { ...newUser, _id: insertResult.insertedId };
+      } else {
+        // If existing user has no image but Google provides one, update it
+        if (!existingUser.image && user.image) {
+          await usersCollection.updateOne(
+            { _id: existingUser._id },
+            { $set: { image: user.image } }
+          );
+          existingUser.image = user.image;
+        }
+
+        // Also update providerAccountId if it doesn't exist
+        if (!existingUser.providerAccountId && providerAccountId) {
+          await usersCollection.updateOne(
+            { _id: existingUser._id },
+            { $set: { providerAccountId } }
+          );
+          existingUser.providerAccountId = providerAccountId;
+        }
       }
 
-      // Attach to user object so jwt callback can use
+      // Attach to session
       user.id = existingUser._id.toString();
       user.username = existingUser.username;
       user.role = existingUser.role;
