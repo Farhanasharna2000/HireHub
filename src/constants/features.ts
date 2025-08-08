@@ -1,4 +1,4 @@
-import { Award, BarChart3, Briefcase, Building, Clock, FileText, LayoutDashboard, MessageSquare, Plus, Search, Shield, Users } from "lucide-react";
+import { Award, BarChart3, Briefcase, Building, Clock, FileText, LayoutDashboard, MessageSquare, Search, Shield, Users } from "lucide-react";
 
 export const jobSeekersFeatures=[
     {
