@@ -39,7 +39,7 @@ const GoogleLogin = () => {
     <div>
       <button
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-2 border py-2 rounded hover:bg-gray-100"
+        className="w-full flex items-center justify-center gap-2 border py-2 rounded hover:bg-gray-100 cursor-pointer"
       >
         <Image
           src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000"

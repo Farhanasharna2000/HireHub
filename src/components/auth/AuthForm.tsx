@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ import GoogleLogin from "./GoogleLogin";
 import { registerUser } from "@/app/actions/auth/register";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/features/user/userSlice";
+import Link from "next/link";
 
 interface AuthFormProps {
   type: "register" | "signin";
@@ -24,18 +25,33 @@ interface FormData {
 
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const { register, handleSubmit, reset } = useForm<FormData>();
+  const { data: session, update } = useSession(); // Get and refresh session
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const handleUserDispatch = () => {
+    if (session?.user) {
+      dispatch(
+        setUser({
+          id: session.user.id || null,
+          email: session.user.email || null,
+          username: session.user.username || null,
+          role: (session.user.role as "job_seeker" | "recruiter") || null,
+        })
+      );
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
+    setError(""); // clear old errors
+
     if (type === "register") {
       try {
         const response = await registerUser(data);
 
         if (response?.acknowledged) {
-          // Auto-login after registration
           const loginResult = await signIn("credentials", {
             email: data.email,
             password: data.password,
@@ -43,20 +59,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           });
 
           if (loginResult?.ok) {
-            const newSession = await getSession(); //  fetch session data after login
-
-            if (newSession?.user) {
-              dispatch(
-                setUser({
-                  id: newSession.user.id || null,
-                  email: newSession.user.email || null,
-                  username: newSession.user.username || null,
-                  role:
-                    (newSession.user.role as "job_seeker" | "recruiter") ||
-                    null,
-                })
-              );
-            }
+            await update(); // refresh the session
+            handleUserDispatch();
 
             toast.success("Registered successfully");
             reset();
@@ -68,33 +72,21 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           setError("Credentials already exist");
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
         setError("Registration error");
       }
     } else {
-      // Signin flow
       try {
         const { email, password } = data;
         const response = await signIn("credentials", {
           email,
           password,
-          callbackUrl: "/",
           redirect: false,
         });
 
         if (response?.ok) {
-          const newSession = await getSession(); //  fetch session data after login
-          if (newSession?.user) {
-            dispatch(
-              setUser({
-                id: newSession.user.id || null,
-                email: newSession.user.email || null,
-                username: newSession.user.username || null,
-                role:
-                  (newSession.user.role as "job_seeker" | "recruiter") || null,
-              })
-            );
-          }
+          await update(); // refresh the session
+          handleUserDispatch();
 
           toast.success("Logged in successfully");
           reset();
@@ -102,15 +94,15 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         } else {
           setError("Invalid credentials");
         }
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.error(err);
         setError("Authentication failed");
       }
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 border rounded shadow">
+    <div className="max-w-sm mx-auto my-10 p-6 border rounded shadow">
       <h2 className="text-2xl mb-4 text-center font-bold">
         {type === "signin" ? "Sign In" : "Register"}
       </h2>
@@ -185,7 +177,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-2 cursor-pointer rounded hover:bg-blue-700 transition"
         >
           {type === "signin" ? "Sign in" : "Register"}
         </button>
@@ -199,16 +191,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         {type === "signin" ? (
           <>
             Don&apos;t have an account?{" "}
-            <a className="text-blue-500 underline" href="/register">
+            <Link className="text-blue-500 underline" href="/register">
               Register
-            </a>
+            </Link>
           </>
         ) : (
           <>
             Already registered?{" "}
-            <a className="text-blue-500 underline" href="/login">
+            <Link className="text-blue-500 underline" href="/login">
               Sign In
-            </a>
+            </Link>
           </>
         )}
       </div>
