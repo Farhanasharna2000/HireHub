@@ -4,8 +4,8 @@ import React from "react";
 interface Job {
   title: string;
   location: string;
-  createdAt: string; // ISO date string
-  isClosed: boolean;
+  createdAt: string;
+  isClosed?: boolean;  // optional now
 }
 
 interface JobDashboardCardProps {
