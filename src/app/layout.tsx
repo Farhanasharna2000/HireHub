@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import {Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/shared/Navbar";
-import Footer from "../components/shared/Footer";
 import NextAuthSessionProvider from "@/Providers/NextAuthSessionProvider";
 import { Toaster } from "react-hot-toast";
 

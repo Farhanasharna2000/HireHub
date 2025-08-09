@@ -2,6 +2,7 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import LoadingSpinner from './../../../components/LoadingSpinner';
 
 const RecruiterDashboard = () => {
     const router=useRouter();
@@ -20,7 +21,9 @@ const RecruiterDashboard = () => {
     },[])
     return (
         <DashboardLayout activeMenu="recruiter-dashboard">
-            
+            {isLoading?<LoadingSpinner/>:
+            <div></div>
+            }
         </DashboardLayout>
     );
 };

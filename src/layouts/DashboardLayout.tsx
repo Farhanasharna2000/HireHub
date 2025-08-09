@@ -170,7 +170,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <h1 className=" font-semibold md:text-lg">
                 Welcome back!
               </h1>
-              <p className="hidden md:block">Here's what's happening with your jobs today.</p>
+            <p className="hidden md:block">
+  Here&apos;s what&apos;s happening with your jobs today.
+</p>
+
             </div>
           </div>
 
