@@ -1,4 +1,4 @@
-import { Award, BarChart3, Briefcase, Building, Clock, FileText, LayoutDashboard, MessageSquare, Search, Shield, Users } from "lucide-react";
+import { Award, BarChart3, Briefcase, Building, Clock, FileText, LayoutDashboard, MessageSquare, Plus, Search, Shield, Users } from "lucide-react";
 
 export const jobSeekersFeatures=[
     {
@@ -49,6 +49,7 @@ export const recruiterFeatures=[
 //navigation items configuration
 export const NAVIGATION_MENU=[
     {id:'recruiter-dashboard',name:'Dashboard',icon:LayoutDashboard},
+    {id:'post-job',name:'Post Job',icon:Plus},
     {id:'manage-jobs',name:'Manage Jobs',icon:Briefcase},
     {id:'company-profile',name:'Company Profile',icon:Building},
 ]
