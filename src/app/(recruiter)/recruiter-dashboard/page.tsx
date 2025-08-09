@@ -95,11 +95,36 @@ interface DashboardCounts {
   };
 }
 
+interface Job {
+  id: string;
+  title: string;
+  location: string;
+  createdAt: string;
+  isClosed?: boolean;
+  // add other fields if needed
+}
+
+interface Applicant {
+  id: string;
+  name: string;
+  // add other fields if needed
+}
+
+interface RecentApplication {
+  id: string;
+  applicant: Applicant;
+  job: {
+    title: string;
+  };
+  updateAt: string;
+  // add other fields if needed
+}
+
 interface DashboardData {
   counts: DashboardCounts;
   data?: {
-    recentJobs: any[];
-    recentApplications: any[];
+    recentJobs: Job[];
+    recentApplications: RecentApplication[];
   };
 }
 
@@ -129,7 +154,6 @@ const RecruiterDashboard: React.FC = () => {
   useEffect(() => {
     getDashboardOverview();
   }, []);
-
 
   function timeAgo(dateString: string): string {
     if (!dateString) return "";
@@ -209,8 +233,8 @@ const RecruiterDashboard: React.FC = () => {
             <div className="space-y-4">
               {dashboardData?.data?.recentJobs
                 ?.slice(0, 3)
-                ?.map((job, index) => (
-                  <JobDashboardCard key={index} job={job} />
+                ?.map((job) => (
+                  <JobDashboardCard key={job.id} job={job} />
                 ))}
             </div>
           </Card>
@@ -229,12 +253,12 @@ const RecruiterDashboard: React.FC = () => {
             <div className="space-y-4">
               {dashboardData?.data?.recentApplications
                 ?.slice(0, 3)
-                ?.map((data, index) => (
+                ?.map((application) => (
                   <ApplicantDashboardCard
-                    key={index}
-                    applicant={data?.applicant || ""}
-                    position={data?.job?.title}
-                    time={timeAgo(data?.updateAt)}
+                    key={application.id}
+                    applicant={application.applicant}
+                    position={application.job.title}
+                    time={timeAgo(application.updateAt)}
                   />
                 ))}
             </div>
