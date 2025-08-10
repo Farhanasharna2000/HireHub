@@ -1,3 +1,4 @@
+// redux/jobs/jobsApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface JobResponse {
