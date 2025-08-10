@@ -96,7 +96,6 @@ const SelectField = <T extends object>({
 const JobPostingForm: React.FC = () => {
   const router = useRouter();
   const [isPreview, setIsPreview] = useState(false);
-  const [loading, setLoading] = useState(false);
  const [createJob, { isLoading }] = useCreateJobMutation();
   const {
     register,
@@ -227,10 +226,10 @@ try {
 
           <button
             type="submit"
-            disabled={!isValid || loading}
+            disabled={!isValid || isLoading}
             className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? "Posting..." : "Post Job"}
+            {isLoading ? "Posting..." : "Post Job"}
           </button>
         </form>
       </div>
