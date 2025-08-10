@@ -41,16 +41,11 @@ const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
           <div className="h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
 
           {/* Header content */}
-          <div className="p-8">
+          <div className="md:p-8 p-4">
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                  Job Preview
-                </h2>
-              </div>
+              <h2 className="md:text-2xl text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                Job Preview
+              </h2>
 
               <button
                 onClick={onEdit}
@@ -64,29 +59,29 @@ const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
             </div>
 
             {/* Job Title and Location */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-4 leading-tight">
+            <div className="mb-6 md:mb-8">
+              <h1 className="md:text-4xl text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-4 leading-tight">
                 {jobTitle || "Job Title"}
               </h1>
               <div className="flex items-center gap-2 text-lg text-gray-600">
                 <MapPin className="w-5 h-5 text-blue-500" />
-                <span className="font-medium">
+                <span className="font-medium text-sm md:text-base">
                   {location || "Location not specified"}
                 </span>
               </div>
             </div>
 
             {/* Tags and Stats */}
-            <div className="flex flex-wrap items-center gap-4 mb-8">
-              <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-full font-semibold text-sm shadow-lg">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-6 md:mb-8">
+              <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 md:px-4 py-2 rounded-full font-semibold text-xs md:text-sm shadow-lg">
                 <Star className="w-4 h-4" />
                 {category}
               </span>
-              <span className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-full font-semibold text-sm shadow-lg">
+              <span className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-full font-semibold text-xs md:text-sm shadow-lg">
                 <Users className="w-4 h-4" />
                 {jobType}
               </span>
-              <span className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 rounded-full font-semibold text-sm shadow-lg">
+              <span className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 rounded-full font-semibold text-xs md:text-sm shadow-lg">
                 <Clock className="w-4 h-4" />
                 Posted today
               </span>
@@ -103,7 +98,7 @@ const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
                     <p className="font-semibold text-green-700 mb-1">
                       Annual Compensation
                     </p>
-                    <p className="text-2xl font-bold text-green-800">
+                    <p className="md:text-2xl text-xl font-bold text-green-800">
                       {salaryMin
                         ? `$${parseInt(salaryMin).toLocaleString()}`
                         : "N/A"}{" "}
@@ -129,8 +124,7 @@ const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
             {/* What We're Looking For */}
             <section>
               <h3 className="text-lg font-semibold border-l-4 border-pink-600 pl-3 mb-4">
-           What We&#39;re Looking For
-
+                What We&#39;re Looking For
               </h3>
               <p className="text-gray-700 bg-pink-50 p-4 rounded whitespace-pre-line">
                 {requirements}
