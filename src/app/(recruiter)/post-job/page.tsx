@@ -3,10 +3,12 @@
 import JobPostingPreview from "@/components/cards/JobPostingPreview";
 import { CATEGORIES, JOB_TYPES } from "@/constants/features";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { useCreateJobMutation } from "@/redux/jobs/jobsApi";
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm, SubmitHandler, Path, UseFormRegister } from "react-hook-form";
+import toast from "react-hot-toast";
 
 interface JobFormInputs {
   jobTitle: string;
@@ -19,7 +21,7 @@ interface JobFormInputs {
   salaryMax?: string;
 }
 
-interface InputFieldProps<T extends Record<string, any>> {
+interface InputFieldProps<T extends object> {
   label: string;
   id: Path<T>;
   placeholder?: string;
@@ -29,7 +31,7 @@ interface InputFieldProps<T extends Record<string, any>> {
   type?: string;
 }
 
-const InputField = <T extends Record<string, any>>({
+const InputField = <T extends object>({
   label,
   id,
   placeholder,
@@ -56,7 +58,7 @@ const InputField = <T extends Record<string, any>>({
   </div>
 );
 
-interface SelectFieldProps<T extends Record<string, any>> {
+interface SelectFieldProps<T extends object> {
   label: string;
   id: Path<T>;
   options: { value: string; label: string }[];
@@ -64,7 +66,7 @@ interface SelectFieldProps<T extends Record<string, any>> {
   error?: string;
 }
 
-const SelectField = <T extends Record<string, any>>({
+const SelectField = <T extends object>({
   label,
   id,
   options,
@@ -95,7 +97,7 @@ const JobPostingForm: React.FC = () => {
   const router = useRouter();
   const [isPreview, setIsPreview] = useState(false);
   const [loading, setLoading] = useState(false);
-
+ const [createJob, { isLoading }] = useCreateJobMutation();
   const {
     register,
     handleSubmit,
@@ -106,27 +108,17 @@ const JobPostingForm: React.FC = () => {
   const formData = watch();
 
 const onSubmit: SubmitHandler<JobFormInputs> = async (data) => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/jobs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+try {
+      const result = await createJob(data).unwrap(); 
 
-      const json = await response.json();
-
-      if (!response.ok) {
-        alert(json.error || "Failed to post job.");
-        setLoading(false);
-        return;
+      if (result.success) {
+        toast.success("Job posted successfully!");
+        router.push("/recruiter-dashboard");
+      } else {
+        toast.error(result.error || "Failed to post job.");
       }
-
-      alert("Job posted successfully!");
-      router.push("/recruiter-dashboard");
-    } catch (error) {
-      alert("Network error.");
-      setLoading(false);
+    } catch {
+      toast.error("Network error.");
     }
   };
 
