@@ -14,6 +14,7 @@ import {
   Globe,
 } from "lucide-react";
 import HomeLayout from "@/layouts/HomeLayout";
+import Image from "next/image";
 
 const About: React.FC = () => {
   return (
@@ -219,10 +220,12 @@ const About: React.FC = () => {
                 key={idx}
                 className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg hover:scale-105 transition duration-300"
               >
-                <img
+                <Image
                   src={member.avatar}
                   alt={member.name}
-                  className="w-20 h-20 mx-auto rounded-full object-cover shadow-md border-2 border-white"
+                  width={100}
+                  height={100}
+                  className="size-20 mx-auto rounded-full object-contain shadow-md border-2 border-white"
                 />
 
                 <h3 className="font-bold">{member.name}</h3>

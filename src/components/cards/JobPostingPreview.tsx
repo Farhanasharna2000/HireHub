@@ -4,7 +4,6 @@ import {
   MapPin,
   DollarSign,
   Edit3,
-  Briefcase,
   Users,
   Star,
 } from "lucide-react";
