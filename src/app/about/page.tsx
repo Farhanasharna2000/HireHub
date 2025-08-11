@@ -48,8 +48,8 @@ const About: React.FC = () => {
       </section>
 
       {/* Stats */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="md:py-16 py-10 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
           {[
             {
               icon: Briefcase,
@@ -78,10 +78,10 @@ const About: React.FC = () => {
           ].map((stat, i) => (
             <div
               key={i}
-              className="bg-white rounded-lg shadow-md hover:shadow-xl transition-transform duration-300 p-6 hover:scale-105"
+              className="bg-white rounded-lg shadow-md hover:shadow-xl transition-transform duration-300 p-4 md:p-6 hover:scale-105"
             >
               <stat.icon className={`w-10 h-10 mx-auto mb-4 ${stat.color}`} />
-              <div className="text-3xl font-bold">{stat.value}</div>
+              <div className="md:text-3xl text-xl font-bold">{stat.value}</div>
               <div className="text-gray-500">{stat.label}</div>
             </div>
           ))}
