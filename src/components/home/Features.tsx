@@ -4,7 +4,7 @@ import React from "react";
 
 const Features = () => {
   return (
-    <section className="py-10 md:py-12 bg-white relative">
+    <section className="py-10 md:pb-12 bg-white relative">
       <div className=" container mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="text-center mb-8 md:mb-15">

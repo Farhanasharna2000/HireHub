@@ -131,7 +131,7 @@ const RecruiterDashboard: React.FC = () => {
   const getDashboardOverview = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch("http://localhost:3000/api/analytics/overview");
+      const res = await fetch("/api/analytics/overview");
       if (!res.ok) {
         throw new Error("Failed to fetch dashboard data");
       }

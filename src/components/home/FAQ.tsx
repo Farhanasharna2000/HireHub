@@ -36,9 +36,9 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <section className="bg-gray-50 pb-10 md:py-12">
+    <section className="bg-gray-50 pt-6 pb-10 md:pt-12 md:pb-20">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-5xl font-bold text-center mb-8 text-gray-800">
+        <h2 className="text-3xl md:text-5xl font-bold text-center mb-8 text-gray-800">
           Frequently Asked Questions
         </h2>
         <div className="max-w-4xl mx-auto space-y-4">
