@@ -27,8 +27,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   children,
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [activeNavItem, setActiveNavItem] = useState<string>(activeMenu || "Dashboard");
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
+  const [activeNavItem, setActiveNavItem] = useState<string>(
+    activeMenu || "Dashboard"
+  );
+  const [profileDropdownOpen, setProfileDropdownOpen] =
+    useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const router = useRouter();
@@ -89,7 +92,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const sidebarCollapsed = !isMobile && false; // placeholder for collapse
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 ">
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 transform ${
@@ -98,7 +101,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               ? "translate-x-0"
               : "-translate-x-full"
             : "translate-x-0"
-        } ${sidebarCollapsed ? "w-16" : "w-64"} bg-white border-r border-gray-200`}
+        } ${
+          sidebarCollapsed ? "w-16" : "w-64"
+        } bg-white border-r border-gray-200`}
       >
         {/* Logo */}
         <div className="p-4 flex items-center space-x-2 border-b border-gray-200">
@@ -163,21 +168,23 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 onClick={toggleSidebar}
                 className="p-2 mr-2 rounded  hover:bg-gray-200"
               >
-                {sidebarOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+                {sidebarOpen ? (
+                  <X className="size-5" />
+                ) : (
+                  <Menu className="size-5" />
+                )}
               </button>
             )}
             <div>
-              <h1 className=" font-semibold md:text-lg">
-                Welcome back!
-              </h1>
-            <p className="hidden md:block">
-  Here&apos;s what&apos;s happening with your jobs today.
-</p>
-
+              <h1 className=" font-semibold md:text-lg">Welcome back!</h1>
+              <p className="hidden md:block">
+                Here&apos;s what&apos;s happening with your jobs today.
+              </p>
             </div>
           </div>
 
           {/* Right: Profile */}
+          {status === "authenticated" && session?.user ? (
             <ProfileDropdown
               isOpen={profileDropdownOpen}
               onToggle={(e: MouseEvent<HTMLButtonElement>) => {
@@ -185,7 +192,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 setProfileDropdownOpen(!profileDropdownOpen);
               }}
               avatar={
-                session?.user?.image ||
+                session.user.image ||
                 "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
               }
               companyName={user?.username || ""}
@@ -193,7 +200,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               userRole={user?.role || ""}
               onLogout={() => signOut()}
             />
-         
+          ) : null}
         </header>
 
         {/* Page Content */}
