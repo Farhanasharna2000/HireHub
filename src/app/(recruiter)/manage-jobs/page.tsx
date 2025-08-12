@@ -309,30 +309,30 @@ export default function JobManagementDashboard() {
                           <button className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 hover:scale-110">
                             <Edit className="w-4 h-4" />
                           </button>
-                          {job.status === "Active" ? (
-                            <button 
-                              onClick={() => handleStatusChange(job.id)}
-                              className="flex items-center gap-2 px-3 py-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-all duration-300 text-sm font-medium"
-                            >
-                              <X className="w-4 h-4" />
-                              Close
-                            </button>
-                          ) : (
-                            <button 
-                              onClick={() => handleStatusChange(job.id)}
-                              className="flex items-center gap-2 px-3 py-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300 text-sm font-medium"
-                            >
-                              <Plus className="w-4 h-4" />
-                              Activate
-                            </button>
-                          )}
-                          <button 
-                            onClick={() => handleDeleteJob(job.id)}
-                            className="flex items-center gap-2 px-3 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300 text-sm font-medium"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
-                          </button>
+                 {job.status === "Active" ? (
+  <button 
+    onClick={() => job.id && handleStatusChange(job.id)}
+    className="flex items-center gap-2 px-3 py-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-all duration-300 text-sm font-medium"
+  >
+    <X className="w-4 h-4" />
+    Close
+  </button>
+) : (
+  <button 
+    onClick={() => job.id && handleStatusChange(job.id)}
+    className="flex items-center gap-2 px-3 py-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300 text-sm font-medium"
+  >
+    <Plus className="w-4 h-4" />
+    Activate
+  </button>
+)}
+<button 
+  onClick={() => job.id && handleDeleteJob(job.id)}
+  className="flex items-center gap-2 px-3 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300 text-sm font-medium"
+>
+  <Trash2 className="w-4 h-4" />
+  Delete
+</button>
                         </div>
                       </div>
                     ))}
