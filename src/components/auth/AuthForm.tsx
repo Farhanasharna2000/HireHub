@@ -21,15 +21,19 @@ interface FormData {
   email: string;
   password: string;
   role?: "job_seeker" | "recruiter";
+  companyName?: string;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
-  const { register, handleSubmit, reset } = useForm<FormData>();
-  const { data: session, update } = useSession(); // Get and refresh session
+  const { register, handleSubmit, reset, watch } = useForm<FormData>();
+  const { data: session, update } = useSession();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+
+  // Watch the role field to conditionally show company name
+  const selectedRole = watch("role");
 
   const handleUserDispatch = () => {
     if (session?.user) {
@@ -39,13 +43,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           email: session.user.email || null,
           username: session.user.username || null,
           role: (session.user.role as "job_seeker" | "recruiter") || null,
+          companyName: session.user.companyName || null,
         })
       );
     }
   };
 
   const onSubmit = async (data: FormData) => {
-    setError(""); // clear old errors
+    setError("");
 
     if (type === "register") {
       try {
@@ -59,7 +64,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           });
 
           if (loginResult?.ok) {
-            await update(); // refresh the session
+            await update();
             handleUserDispatch();
 
             toast.success("Registered successfully");
@@ -68,8 +73,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           } else {
             setError("Registration failed.");
           }
+        } else if (response?.error) {
+          setError(response.error);
         } else {
-          setError("Credentials already exist");
+          setError("Registration failed");
         }
       } catch (err) {
         console.error(err);
@@ -85,7 +92,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         });
 
         if (response?.ok) {
-          await update(); // refresh the session
+          await update();
           handleUserDispatch();
 
           toast.success("Logged in successfully");
@@ -145,6 +152,17 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                 </label>
               </div>
             </div>
+
+            {/* Conditionally show company name field for recruiters */}
+            {selectedRole === "recruiter" && (
+              <input
+                {...register("companyName")}
+                type="text"
+                placeholder="Company Name "
+                required
+                className="w-full p-2 border rounded"
+              />
+            )}
           </>
         )}
 

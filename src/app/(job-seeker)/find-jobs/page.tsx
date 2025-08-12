@@ -43,7 +43,6 @@ interface FilterContentProps {
   filters: Filters;
 }
 
-
 // ------------------ FilterContent Component ------------------
 
 const FilterContent: React.FC<FilterContentProps> = ({
@@ -184,7 +183,7 @@ const FilterContent: React.FC<FilterContentProps> = ({
 // ------------------ Main Dashboard Component ------------------
 
 const JobSeekerDashboard: React.FC = () => {
-  const router=useRouter()
+  const router = useRouter();
   const [jobs] = useState(mockJobs);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -266,112 +265,121 @@ const JobSeekerDashboard: React.FC = () => {
 
   return (
     <>
-    <HomeLayout>
-    <div className="bg-gray-50">
-      <SearchHeader filters={filters} handleFilterChange={handleFilterChange} />
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex gap-8">
-          {/* Desktop Sidebar Filters */}
-          <div className="hidden lg:block w-80 flex-shrink-0">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
-              <FilterContent
-                toggleSection={toggleSection}
-                clearAllFilters={clearAllFilters}
-                expandedSections={expandedSections}
-                handleFilterChange={handleFilterChange}
-                filters={filters}
-              />
-            </div>
-          </div>
+      <HomeLayout>
+        <div className="bg-gray-50">
+          <SearchHeader
+            filters={filters}
+            handleFilterChange={handleFilterChange}
+          />
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex gap-8">
+              {/* Desktop Sidebar Filters */}
+              <div className="hidden lg:block w-80 flex-shrink-0">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
+                  <FilterContent
+                    toggleSection={toggleSection}
+                    clearAllFilters={clearAllFilters}
+                    expandedSections={expandedSections}
+                    handleFilterChange={handleFilterChange}
+                    filters={filters}
+                  />
+                </div>
+              </div>
 
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Results Header */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <p className="text-lg text-gray-900">
-                  Showing{" "}
-                  <span className="font-semibold text-blue-600">
-                    {jobs.length}
-                  </span>{" "}
-                  Jobs
-                </p>
+              {/* Main Content */}
+              <div className="flex-1">
+                {/* Results Header */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <p className="text-lg text-gray-900">
+                      Showing{" "}
+                      <span className="font-semibold text-blue-600">
+                        {jobs.length}
+                      </span>{" "}
+                      Jobs
+                    </p>
 
-                <div className="flex items-center gap-4">
-                  {/* Mobile Filter Button */}
-                  <Button
-                    variant="outline"
-                    className="lg:hidden"
-                    onClick={() => setShowMobileFilter(true)}
-                  >
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filters
-                  </Button>
+                    <div className="flex items-center gap-4">
+                      {/* Mobile Filter Button */}
+                      <Button
+                        variant="outline"
+                        className="lg:hidden"
+                        onClick={() => setShowMobileFilter(true)}
+                      >
+                        <Filter className="w-4 h-4 mr-2" />
+                        Filters
+                      </Button>
 
-                  {/* View Mode Toggle */}
-                  <div className="flex border border-gray-200 rounded-lg p-1">
-                    <Button
-                      variant={viewMode === "grid" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setViewMode("grid")}
-                      className="px-3"
-                    >
-                      <Grid className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant={viewMode === "list" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setViewMode("list")}
-                      className="px-3"
-                    >
-                      <List className="w-4 h-4" />
-                    </Button>
+                      {/* View Mode Toggle */}
+                      <div className="flex gap-1 border border-gray-200 rounded-lg p-1">
+                        <Button
+                          size="sm"
+                          onClick={() => setViewMode("grid")}
+                          className={`${
+                            viewMode === "grid"
+                              ? "bg-blue-500 px-3"
+                              : "bg-white text-black hover:text-white border px-3"
+                          }`}
+                        >
+                          <Grid className="w-5 h-5" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => setViewMode("list")}
+                          className={`${
+                            viewMode === "list"
+                              ? "bg-blue-500 px-3"
+                              : "bg-white text-black hover:text-white border px-3"
+                          }`}
+                        >
+                          <List className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                {/* Job Grid/List */}
+                {jobs.length === 0 ? (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Search className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      No jobs found
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Try adjusting your search criteria or filters
+                    </p>
+                    <Button variant="outline" onClick={clearAllFilters}>
+                      Clear All Filters
+                    </Button>
+                  </div>
+                ) : (
+                  <div
+                    className={
+                      viewMode === "grid"
+                        ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+                        : "space-y-4"
+                    }
+                  >
+                    {jobs.map((job) => (
+                      <JobCard
+                        key={job.id}
+                        job={job}
+                        viewMode={viewMode}
+                        onClick={() => router.push(`/find-jobs/${job.id}`)}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-
-            {/* Job Grid/List */}
-            {jobs.length === 0 ? (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-8 h-8 text-gray-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  No jobs found
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Try adjusting your search criteria or filters
-                </p>
-                <Button variant="outline" onClick={clearAllFilters}>
-                  Clear All Filters
-                </Button>
-              </div>
-            ) : (
-              <div
-                className={
-                  viewMode === "grid"
-                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-                    : "space-y-4"
-                }
-              >
-                {jobs.map((job) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    viewMode={viewMode}
-                    onClick={() => router.push(`/find-jobs/${job.id}`)}
-                  />
-                ))}
-              </div>
-            )}
           </div>
-        </div>
-      </div>
 
-      <MobileFilterOverlay />
-    </div>
-    </HomeLayout>
+          <MobileFilterOverlay />
+        </div>
+      </HomeLayout>
     </>
   );
 };

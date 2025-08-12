@@ -5,6 +5,7 @@ interface UserState {
   email: string | null;
   username: string | null;
   role: 'job_seeker' | 'recruiter' | null;
+  companyName:  string | null;
 }
 
 const initialState: UserState = {
@@ -12,6 +13,8 @@ const initialState: UserState = {
   email: null,
   username: null,
   role: null,
+  companyName: null,
+
 };
 
 export const userSlice = createSlice({

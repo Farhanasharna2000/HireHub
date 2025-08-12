@@ -8,12 +8,14 @@ declare module "next-auth" {
   interface User {
     username?: string;
     role?: string;
+    companyName?: string;
   }
   interface Session {
     user: {
       id?: string;
       username?: string;
       role?: string;
+      companyName?: string;
       name?: string | null;
       email?: string | null;
       image?: string | null;
@@ -42,6 +44,7 @@ export const authConfig: NextAuthOptions = {
             email: user.email,
             username: user.username,
             role: user.role,
+            companyName: user.companyName,
           };
         } else {
           return null;
@@ -80,6 +83,7 @@ export const authConfig: NextAuthOptions = {
           image,
           username: name,
           role: "job_seeker", // default role
+          companyName: null, // default company name
         };
         const insertResult = await usersCollection.insertOne(newUser);
         existingUser = { ...newUser, _id: insertResult.insertedId };
@@ -107,6 +111,7 @@ export const authConfig: NextAuthOptions = {
       user.id = existingUser._id.toString();
       user.username = existingUser.username;
       user.role = existingUser.role;
+      user.companyName = existingUser.companyName;
 
       return true;
     },
@@ -116,6 +121,7 @@ export const authConfig: NextAuthOptions = {
         token.id = user.id;
         token.username = user.username;
         token.role = user.role;
+        token.companyName = user.companyName;
       }
       return token;
     },
@@ -125,6 +131,7 @@ export const authConfig: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
         session.user.role = token.role as string;
+        session.user.companyName = token.companyName as string;
       }
       return session;
     },
