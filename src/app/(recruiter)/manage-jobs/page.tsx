@@ -1,43 +1,74 @@
-'use client'
+'use client' 
 import React, { useState, useMemo } from "react";
 import { Edit, Plus, Search, Trash2, Users, X, ChevronUp, ChevronDown } from "lucide-react";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store"; 
+import { useGetCompanyJobsQuery,useDeleteJobMutation,useUpdateJobStatusMutation } from "@/redux/jobs/jobsApi"; 
+import toast from "react-hot-toast";
 
 interface Job {
-  id: string;
-  title: string;
-  company: string;
-  status: "Active" | "Closed";
+  _id?: string;
+  id?: string;
+  title: string;          
+  companyName: string;
+  status: "Active" | "Closed" ; 
   applicants: number;
+  location?: string;
+  category?: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 }
-
-const DUMMY_JOBS: Job[] = [
-  { id: "1", title: "Frontend Developer", company: "ABC Corp", status: "Active", applicants: 12 },
-  { id: "2", title: "Backend Engineer", company: "XYZ Ltd", status: "Closed", applicants: 7 },
-  { id: "3", title: "Fullstack Developer", company: "TechSoft", status: "Active", applicants: 5 },
-  { id: "4", title: "Data Scientist", company: "DataWorks", status: "Closed", applicants: 9 },
-  { id: "5", title: "UI/UX Designer", company: "Creative Minds", status: "Active", applicants: 4 },
-  { id: "6", title: "Project Manager", company: "Biz Solutions", status: "Active", applicants: 8 },
-  { id: "7", title: "DevOps Engineer", company: "CloudTech", status: "Active", applicants: 15 },
-  { id: "8", title: "Mobile Developer", company: "AppCraft", status: "Closed", applicants: 6 },
-];
 
 export default function JobManagementDashboard() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "Closed">("All");
   const [sortField, setSortField] = useState<"title" | "status" | "applicants" | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const jobsPerPage = 5;
 
+  // Get user data from Redux store
+  const user = useSelector((state: RootState) => state.user);
+
+  // Fetch jobs for the logged-in recruiter's company
+  const { 
+    data: jobsData, 
+    isLoading, 
+    error,
+    refetch 
+  } = useGetCompanyJobsQuery(user.companyName, {
+    skip: !user.companyName || user.role !== 'recruiter'
+  });
+const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutation();
+  const [deleteJob, { isLoading: deletingJob }] = useDeleteJobMutation();
+
+  // Transform the jobs data to match our interface
+  const jobs: Job[] = useMemo(() => {
+    if (!jobsData?.jobs) return [];
+
+    return jobsData.jobs.map((job: Job) => ({
+      id: job._id || job.id,
+      title: job.jobTitle || "",
+      companyName: job.companyName || "",
+      status: job.status || "Active",  
+      applicants: job.applicants || 0,
+      location: job.location,
+      category: job.category,
+      createdAt: job.createdAt,
+      updatedAt: job.updatedAt,
+    }));
+  }, [jobsData]);
+
   // Filter and sort jobs
   const filteredAndSortedJobs = useMemo(() => {
-    let filtered = DUMMY_JOBS.filter((job) => {
+    if (!jobs.length) return [];
+
+    let filtered = jobs.filter((job) => {
       const matchesStatus = statusFilter === "All" || job.status === statusFilter;
       const matchesSearch =
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase());
+        job.companyName.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesStatus && matchesSearch;
     });
 
@@ -46,8 +77,8 @@ export default function JobManagementDashboard() {
         if (sortField === "applicants") {
           return sortOrder === "asc" ? a.applicants - b.applicants : b.applicants - a.applicants;
         } else {
-          const aField = a[sortField] as string;
-          const bField = b[sortField] as string;
+          const aField = (a[sortField] || "").toString().toLowerCase();
+          const bField = (b[sortField] || "").toString().toLowerCase();
           if (aField < bField) return sortOrder === "asc" ? -1 : 1;
           if (aField > bField) return sortOrder === "asc" ? 1 : -1;
           return 0;
@@ -56,7 +87,7 @@ export default function JobManagementDashboard() {
     }
 
     return filtered;
-  }, [searchTerm, statusFilter, sortField, sortOrder]);
+  }, [jobs, searchTerm, statusFilter, sortField, sortOrder]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedJobs.length / jobsPerPage);
@@ -76,13 +107,33 @@ export default function JobManagementDashboard() {
     }
   };
 
-  const handleStatusChange = (jobId: string) => {
-    alert(`Change status for job id: ${jobId}`);
-  };
+const handleStatusChange = async (jobId: string) => {
+  const job = jobs.find((j) => j.id === jobId);
+  if (!job) return;
 
-  const handleDeleteJob = (jobId: string) => {
-    alert(`Delete job id: ${jobId}`);
-  };
+  const newStatus = job.status === "Active" ? "Closed" : "Active";
+
+  try {
+    await updateJobStatus({ id: jobId, status: newStatus }).unwrap();
+    refetch();
+   toast.success(`Job status changed to ${newStatus}`);
+  } catch (err) {
+    console.error("Error updating job status:", err);
+   toast.error("Failed to update job status");
+  }
+};
+
+const handleDeleteJob = async (jobId: string) => {
+  try {
+    // Make sure we're using the correct ID (the _id from MongoDB)
+    await deleteJob(jobId).unwrap();
+    refetch();
+    toast.success("Job deleted successfully");
+  } catch (err) {
+    console.error("Error deleting job:", err);
+    toast.error("Failed to delete job");
+  }
+};
 
   const goToPrevPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const goToNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
@@ -94,18 +145,36 @@ export default function JobManagementDashboard() {
       <ChevronDown className="w-4 h-4 text-blue-600" />;
   };
 
-  return (
-        <DashboardLayout activeMenu="manage-jobs">
+  if (error) {
+    return (
+      <DashboardLayout activeMenu="manage-jobs">
+        <div className="container mx-auto p-8">
+          <div className="text-center py-16">
+            <h3 className="text-2xl font-semibold text-red-600 mb-2">Error Loading Jobs</h3>
+            <p className="text-slate-500 mb-4">Failed to load jobs. Please try again.</p>
+            <button 
+              onClick={() => refetch()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
+  return (
+    <DashboardLayout activeMenu="manage-jobs">
       <div className="container mx-auto p-8">
-        {/* Glassmorphism Header */}
+        {/* Header */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 mb-8">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent mb-2">
+              <h1 className="text-4xl font-bold  pb-2">
                 Job Management
               </h1>
-              <p className="text-slate-600 text-lg">Manage your job postings and track applications</p>
+            
             </div>
             <button className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2">
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
@@ -113,7 +182,7 @@ export default function JobManagementDashboard() {
             </button>
           </div>
 
-          {/* Enhanced Filters */}
+          {/* Filters */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="relative group">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -144,15 +213,22 @@ export default function JobManagementDashboard() {
           </div>
         </div>
 
-        {/* Main Content */}
+        {/* Jobs Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
           {filteredAndSortedJobs.length === 0 && !isLoading ? (
             <div className="text-center py-16">
               <div className="w-24 h-24 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Search className="w-12 h-12 text-slate-400" />
               </div>
-              <h3 className="text-2xl font-semibold text-slate-700 mb-2">No Jobs Found</h3>
-              <p className="text-slate-500">Try adjusting your search or filter criteria</p>
+              <h3 className="text-2xl font-semibold text-slate-700 mb-2">
+                {jobs.length === 0 ? 'No Jobs Posted Yet' : 'No Jobs Found'}
+              </h3>
+              <p className="text-slate-500">
+                {jobs.length === 0 
+                  ? 'Start by creating your first job posting' 
+                  : 'Try adjusting your search or filter criteria'
+                }
+              </p>
             </div>
           ) : (
             <>
@@ -208,7 +284,9 @@ export default function JobManagementDashboard() {
                           <div className="font-semibold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors duration-300">
                             {job.title}
                           </div>
-                          <div className="text-slate-500 text-sm">{job.company}</div>
+                          {job.location && (
+                            <div className="text-sm text-slate-500">{job.location}</div>
+                          )}
                         </div>
                         <div className="col-span-2">
                           <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
@@ -216,7 +294,7 @@ export default function JobManagementDashboard() {
                               ? "bg-emerald-100 text-emerald-800 border border-emerald-200" 
                               : "bg-slate-100 text-slate-800 border border-slate-200"
                           }`}>
-                            {job.status}
+                            {job.status || "Active"}
                           </span>
                         </div>
                         <div className="col-span-2">
@@ -258,7 +336,7 @@ export default function JobManagementDashboard() {
                     ))}
               </div>
 
-              {/* Enhanced Pagination */}
+              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="bg-gradient-to-r from-slate-50 to-blue-50 px-8 py-6 border-t border-slate-200">
                   <div className="flex justify-center items-center gap-4">
@@ -307,19 +385,19 @@ export default function JobManagementDashboard() {
           )}
         </div>
 
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
+        <style jsx>{`
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-    </div>
-        </DashboardLayout>
+        `}</style>
+      </div>
+    </DashboardLayout>
   );
 }

@@ -1,4 +1,3 @@
-// redux/jobs/jobsApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface JobResponse {
@@ -19,6 +18,7 @@ export interface JobFormInputs {
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  tagTypes: ["Jobs"],
   endpoints: (builder) => ({
     createJob: builder.mutation<JobResponse, JobFormInputs>({
       query: (jobData) => ({
@@ -27,7 +27,25 @@ export const jobsApi = createApi({
         body: jobData,
       }),
     }),
+    getCompanyJobs: builder.query({
+      query: (companyName) => `jobs?companyName=${companyName}`,
+    }),
+   updateJobStatus: builder.mutation<JobResponse, { id: string; status: "Active" | "Closed" }>({
+      query: ({ id, status }) => ({
+        url: `jobs?id=${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Jobs"],
+    }),
+    deleteJob: builder.mutation<JobResponse, string>({
+      query: (id) => ({
+        url: `jobs?id=${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Jobs"],
+    }),
   }),
 });
 
-export const { useCreateJobMutation } = jobsApi;
+export const { useCreateJobMutation,useGetCompanyJobsQuery,useUpdateJobStatusMutation,useDeleteJobMutation } = jobsApi;

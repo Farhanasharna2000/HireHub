@@ -4,11 +4,13 @@ import JobPostingPreview from "@/components/cards/JobPostingPreview";
 import { CATEGORIES, JOB_TYPES } from "@/constants/features";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { useCreateJobMutation } from "@/redux/jobs/jobsApi";
+import { RootState } from "@/redux/store";
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm, SubmitHandler, Path, UseFormRegister } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 interface JobFormInputs {
   jobTitle: string;
@@ -97,6 +99,7 @@ const JobPostingForm: React.FC = () => {
   const router = useRouter();
   const [isPreview, setIsPreview] = useState(false);
  const [createJob, { isLoading }] = useCreateJobMutation();
+const user = useSelector((state: RootState) => state.user);
   const {
     register,
     handleSubmit,
@@ -108,7 +111,13 @@ const JobPostingForm: React.FC = () => {
 
 const onSubmit: SubmitHandler<JobFormInputs> = async (data) => {
 try {
-      const result = await createJob(data).unwrap(); 
+    const newjobdata = {
+      ...data,
+      status: "Active",                
+      applicants: 0,             
+      companyName: user?.companyName,  
+    };
+      const result = await createJob(newjobdata).unwrap(); 
 
       if (result.success) {
         toast.success("Job posted successfully!");
