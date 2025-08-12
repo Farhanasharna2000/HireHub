@@ -1,5 +1,4 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
-import { Edit } from 'lucide-react';
 import React from 'react';
 
 const CompanyProfilePage = () => {

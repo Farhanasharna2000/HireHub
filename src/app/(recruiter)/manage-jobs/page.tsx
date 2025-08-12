@@ -1,10 +1,10 @@
-'use client' 
+'use client'
 import React, { useState, useMemo } from "react";
 import { Edit, Plus, Search, Trash2, Users, X, ChevronUp, ChevronDown } from "lucide-react";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store"; 
-import { useGetCompanyJobsQuery,useDeleteJobMutation,useUpdateJobStatusMutation } from "@/redux/jobs/jobsApi"; 
+import { useGetCompanyJobsQuery, useDeleteJobMutation, useUpdateJobStatusMutation } from "@/redux/jobs/jobsApi"; 
 import toast from "react-hot-toast";
 
 interface Job {
@@ -23,7 +23,9 @@ interface Job {
 export default function JobManagementDashboard() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "Closed">("All");
-  const [sortField, setSortField] = useState<"title" | "status" | "applicants" | null>(null);
+
+  // NOTE: Changed here from "title" to "jobTitle"
+  const [sortField, setSortField] = useState<"jobTitle" | "status" | "applicants" | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState<number>(1);
   const jobsPerPage = 5;
@@ -40,7 +42,8 @@ export default function JobManagementDashboard() {
   } = useGetCompanyJobsQuery(user.companyName, {
     skip: !user.companyName || user.role !== 'recruiter'
   });
-const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutation();
+
+  const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutation();
   const [deleteJob, { isLoading: deletingJob }] = useDeleteJobMutation();
 
   // Transform the jobs data to match our interface
@@ -77,6 +80,7 @@ const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutat
         if (sortField === "applicants") {
           return sortOrder === "asc" ? a.applicants - b.applicants : b.applicants - a.applicants;
         } else {
+          // Now this is valid because sortField is keyof Job with string values
           const aField = (a[sortField] || "").toString().toLowerCase();
           const bField = (b[sortField] || "").toString().toLowerCase();
           if (aField < bField) return sortOrder === "asc" ? -1 : 1;
@@ -98,7 +102,7 @@ const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutat
   }, [filteredAndSortedJobs, page]);
 
   // Handlers
-  const handleSort = (field: "title" | "status" | "applicants") => {
+  const handleSort = (field: "jobTitle" | "status" | "applicants") => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -107,33 +111,32 @@ const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutat
     }
   };
 
-const handleStatusChange = async (jobId: string) => {
-  const job = jobs.find((j) => j.id === jobId);
-  if (!job) return;
+  const handleStatusChange = async (jobId: string) => {
+    const job = jobs.find((j) => j.id === jobId);
+    if (!job) return;
 
-  const newStatus = job.status === "Active" ? "Closed" : "Active";
+    const newStatus = job.status === "Active" ? "Closed" : "Active";
 
-  try {
-    await updateJobStatus({ id: jobId, status: newStatus }).unwrap();
-    refetch();
-   toast.success(`Job status changed to ${newStatus}`);
-  } catch (err) {
-    console.error("Error updating job status:", err);
-   toast.error("Failed to update job status");
-  }
-};
+    try {
+      await updateJobStatus({ id: jobId, status: newStatus }).unwrap();
+      refetch();
+      toast.success(`Job status changed to ${newStatus}`);
+    } catch (err) {
+      console.error("Error updating job status:", err);
+      toast.error("Failed to update job status");
+    }
+  };
 
-const handleDeleteJob = async (jobId: string) => {
-  try {
-    // Make sure we're using the correct ID (the _id from MongoDB)
-    await deleteJob(jobId).unwrap();
-    refetch();
-    toast.success("Job deleted successfully");
-  } catch (err) {
-    console.error("Error deleting job:", err);
-    toast.error("Failed to delete job");
-  }
-};
+  const handleDeleteJob = async (jobId: string) => {
+    try {
+      await deleteJob(jobId).unwrap();
+      refetch();
+      toast.success("Job deleted successfully");
+    } catch (err) {
+      console.error("Error deleting job:", err);
+      toast.error("Failed to delete job");
+    }
+  };
 
   const goToPrevPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const goToNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
@@ -174,7 +177,6 @@ const handleDeleteJob = async (jobId: string) => {
               <h1 className="text-4xl font-bold  pb-2">
                 Job Management
               </h1>
-            
             </div>
             <button className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2">
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
@@ -395,6 +397,8 @@ const handleDeleteJob = async (jobId: string) => {
               opacity: 1;
               transform: translateY(0);
             }
+         
+
           }
         `}</style>
       </div>
