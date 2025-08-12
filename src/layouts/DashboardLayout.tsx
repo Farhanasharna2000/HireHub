@@ -51,6 +51,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           email: session.user.email || null,
           username: session.user.username || null,
           role: session.user.role as "job_seeker" | "recruiter" | null,
+          companyName: session.user.companyName || null,
         })
       );
     }
