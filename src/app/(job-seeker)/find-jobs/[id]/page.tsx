@@ -34,9 +34,9 @@ const JobDetailsPage: React.FC = () => {
           <Image
             src={job.logo}
             alt={`${job.company} logo`}
-            width={20}
-            height={20}
-            className="w-20 h-20 object-cover rounded-md"
+            width={100}
+            height={100}
+            className="w-20 h-20 object-contain rounded-md"
           />
           <div>
             <h1 className="text-3xl font-bold">{job.title}</h1>
