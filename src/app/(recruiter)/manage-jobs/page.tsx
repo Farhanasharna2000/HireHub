@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 interface Job {
   _id?: string;
   id?: string;
-  title: string;          
+  jobTitle: string;          
   companyName: string;
   status: "Active" | "Closed" ; 
   applicants: number;
@@ -49,7 +49,7 @@ const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutat
 
     return jobsData.jobs.map((job: Job) => ({
       id: job._id || job.id,
-      title: job.jobTitle || "",
+      jobTitle: job.jobTitle || "",
       companyName: job.companyName || "",
       status: job.status || "Active",  
       applicants: job.applicants || 0,
@@ -67,7 +67,7 @@ const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutat
     let filtered = jobs.filter((job) => {
       const matchesStatus = statusFilter === "All" || job.status === statusFilter;
       const matchesSearch =
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.companyName.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesStatus && matchesSearch;
     });
@@ -237,10 +237,10 @@ const handleDeleteJob = async (jobId: string) => {
                 <div className="grid grid-cols-12 gap-4 px-8 py-6">
                   <div 
                     className="col-span-4 cursor-pointer group flex items-center gap-2 hover:text-blue-600 transition-colors duration-300"
-                    onClick={() => handleSort("title")}
+                    onClick={() => handleSort("jobTitle")}
                   >
                     <span className="font-semibold text-slate-700 group-hover:text-blue-600">Job Title</span>
-                    <SortIcon field="title" />
+                    <SortIcon field="jobTitle" />
                   </div>
                   <div 
                     className="col-span-2 cursor-pointer group flex items-center gap-2 hover:text-blue-600 transition-colors duration-300"
@@ -282,7 +282,7 @@ const handleDeleteJob = async (jobId: string) => {
                       >
                         <div className="col-span-4">
                           <div className="font-semibold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors duration-300">
-                            {job.title}
+                            {job.jobTitle}
                           </div>
                           {job.location && (
                             <div className="text-sm text-slate-500">{job.location}</div>
