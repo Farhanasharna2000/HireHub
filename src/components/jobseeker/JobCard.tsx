@@ -1,6 +1,7 @@
 import React from "react";
 import { Clock, DollarSign, MapPin, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface Job {
   id: string;
@@ -56,9 +57,11 @@ const JobCard: React.FC<JobCardProps> = ({
         }
       >
         {/* Company Logo */}
-        <img
+        <Image
           src={job.logo}
           alt={job.company}
+          width={16}
+          height={16}
           className="w-16 h-16 rounded-xl object-cover border border-gray-100 shadow-sm flex-shrink-0"
         />
 

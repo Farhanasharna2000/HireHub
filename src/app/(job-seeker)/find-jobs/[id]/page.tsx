@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { mockJobs } from "@/constants/jobs";
 import HomeLayout from "@/layouts/HomeLayout";
+import Image from "next/image";
 
 const JobDetailsPage: React.FC = () => {
   const router = useRouter();
@@ -30,9 +31,11 @@ const JobDetailsPage: React.FC = () => {
     <div className="min-h-screen flex justify-center items-center px-4">
       <div className="max-w-3xl w-full p-6 bg-blue-50 rounded-lg shadow-md">
         <div className="flex items-center space-x-4 mb-6">
-          <img
+          <Image
             src={job.logo}
             alt={`${job.company} logo`}
+            width={20}
+            height={20}
             className="w-20 h-20 object-cover rounded-md"
           />
           <div>
