@@ -28,6 +28,8 @@ const GoogleLogin = () => {
               username: session.user.username || null,
               role: (session.user.role as "job_seeker" | "recruiter") || null,
               companyName: session.user.companyName || null,
+              companyLogo: session.user.companyLogo || null,
+
             })
           );
         }

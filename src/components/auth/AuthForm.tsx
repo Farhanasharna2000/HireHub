@@ -11,6 +11,7 @@ import { registerUser } from "@/app/actions/auth/register";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/features/user/userSlice";
 import Link from "next/link";
+import Image from "next/image";
 
 interface AuthFormProps {
   type: "register" | "signin";
@@ -264,9 +265,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                     </div>
                   ) : (
   <div className="mt-4 relative w-24 h-24">
-    <img
+    <Image
       src={logoPreview}
       alt="Company Logo Preview"
+      width={100}
+      height={100}
       className="w-full h-full object-cover rounded border"
     />
     <button
