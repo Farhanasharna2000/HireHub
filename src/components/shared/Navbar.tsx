@@ -70,17 +70,21 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           {!isLoading && session?.user ? (
             <>
-              <Image
-                className="rounded-full border p-1"
-                src={
-                  session.user.image ||  session.user.companyLogo ||
-                  "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
-                }
-                width={40}
-                height={40}
-                alt="user"
-                priority
-              />
+              <div className="w-10 h-10 rounded-full overflow-hidden border">
+                <Image
+                  src={
+                    session?.user?.companyLogo ||
+                    session?.user?.image ||
+                    "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
+                  }
+                  alt="user"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  priority
+                />
+              </div>
+
               <button
                 onClick={() => signOut()}
                 className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"

@@ -1,6 +1,5 @@
 import React from "react";
 import { Clock, DollarSign, MapPin, Bookmark } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 interface Job {

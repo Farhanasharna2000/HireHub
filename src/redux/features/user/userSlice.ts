@@ -18,7 +18,6 @@ const initialState: UserState = {
   companyName: null,
   companyLogo: null,
 
-
 };
 
 export const userSlice = createSlice({

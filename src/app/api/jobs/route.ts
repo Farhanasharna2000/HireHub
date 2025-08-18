@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 interface Job  {
   title: string;
   companyName: string;
+  companyLogo: string;
   status: "Active" | "Closed";
   applicants: number;
   location?: string;

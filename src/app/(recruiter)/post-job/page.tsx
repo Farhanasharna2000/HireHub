@@ -115,7 +115,9 @@ try {
       ...data,
       status: "Active",                
       applicants: 0,             
-      companyName: user?.companyName,  
+      companyName: user?.companyName,
+      companyLogo: user?.companyLogo,  
+
     };
       const result = await createJob(newjobdata).unwrap(); 
 
