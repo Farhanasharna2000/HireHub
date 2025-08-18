@@ -73,7 +73,7 @@ export default function Navbar() {
               <Image
                 className="rounded-full border p-1"
                 src={
-                  session.user.image ||
+                  session.user.image ||  session.user.companyLogo ||
                   "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
                 }
                 width={40}

@@ -6,6 +6,8 @@ interface UserState {
   username: string | null;
   role: 'job_seeker' | 'recruiter' | null;
   companyName:  string | null;
+  companyLogo:  string | null;
+
 }
 
 const initialState: UserState = {
@@ -14,6 +16,8 @@ const initialState: UserState = {
   username: null,
   role: null,
   companyName: null,
+  companyLogo: null,
+
 
 };
 

@@ -9,6 +9,8 @@ declare module "next-auth" {
     username?: string;
     role?: string;
     companyName?: string;
+    companyLogo?: string;
+
   }
   interface Session {
     user: {
@@ -19,6 +21,8 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      companyLogo?: string | null;
+
     };
   }
 }
@@ -45,6 +49,7 @@ export const authConfig: NextAuthOptions = {
             username: user.username,
             role: user.role,
             companyName: user.companyName,
+            companyLogo: user.companyLogo || null,
           };
         } else {
           return null;
@@ -112,7 +117,7 @@ export const authConfig: NextAuthOptions = {
       user.username = existingUser.username;
       user.role = existingUser.role;
       user.companyName = existingUser.companyName;
-
+      user.companyLogo = existingUser.companyLogo;
       return true;
     },
 
@@ -122,6 +127,7 @@ export const authConfig: NextAuthOptions = {
         token.username = user.username;
         token.role = user.role;
         token.companyName = user.companyName;
+        token.companyLogo = user.companyLogo;
       }
       return token;
     },
@@ -132,6 +138,7 @@ export const authConfig: NextAuthOptions = {
         session.user.username = token.username as string;
         session.user.role = token.role as string;
         session.user.companyName = token.companyName as string;
+        session.user.companyLogo = token.companyLogo as string | null;
       }
       return session;
     },

@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import GoogleLogin from "./GoogleLogin";
@@ -22,17 +22,20 @@ interface FormData {
   password: string;
   role?: "job_seeker" | "recruiter";
   companyName?: string;
+  companyLogo?: string;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
-  const { register, handleSubmit, reset, watch } = useForm<FormData>();
+  const { register, handleSubmit, reset, watch, setValue } = useForm<FormData>();
   const { data: session, update } = useSession();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [logoPreview, setLogoPreview] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // Watch the role field to conditionally show company name
+  // Watch the role field to conditionally show company fields
   const selectedRole = watch("role");
 
   const handleUserDispatch = () => {
@@ -44,9 +47,73 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           username: session.user.username || null,
           role: (session.user.role as "job_seeker" | "recruiter") || null,
           companyName: session.user.companyName || null,
+          companyLogo: session.user.companyLogo || null,
         })
       );
     }
+  };
+
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+    formData.append("folder", "company-logos");
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw new Error("Failed to upload image");
+    }
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size should be less than 5MB");
+      return;
+    }
+
+    setUploadingLogo(true);
+
+    try {
+      const logoUrl = await uploadToCloudinary(file);
+      setValue("companyLogo", logoUrl);
+      setLogoPreview(logoUrl);
+      toast.success("Logo uploaded successfully!");
+    } catch (error) {
+      toast.error("Failed to upload logo. Please try again.");
+      console.error("Logo upload error:", error);
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const removeLogo = () => {
+    setValue("companyLogo", "");
+    setLogoPreview("");
   };
 
   const onSubmit = async (data: FormData) => {
@@ -69,6 +136,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
 
             toast.success("Registered successfully");
             reset();
+            setLogoPreview("");
             router.push("/");
           } else {
             setError("Registration failed.");
@@ -153,15 +221,66 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
               </div>
             </div>
 
-            {/* Conditionally show company name field for recruiters */}
+            {/* Conditionally show company fields for recruiters */}
             {selectedRole === "recruiter" && (
-              <input
-                {...register("companyName")}
-                type="text"
-                placeholder="Company Name "
-                required
-                className="w-full p-2 border rounded"
-              />
+              <>
+                <input
+                  {...register("companyName")}
+                  type="text"
+                  placeholder="Company Name"
+                  required
+                  className="w-full p-2 border rounded"
+                />
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Company Logo
+                  </label>
+                  
+                  {!logoPreview ? (
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        disabled={uploadingLogo}
+                        className="hidden"
+                        id="logo-upload"
+                      />
+                      <label
+                        htmlFor="logo-upload"
+                        className={`w-full p-4 border-2 border-dashed border-gray-300 rounded cursor-pointer hover:border-gray-400 transition-colors flex flex-col items-center justify-center ${
+                          uploadingLogo ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                      >
+                        <Upload className="w-6 h-6 text-gray-400 mb-2" />
+                        <span className="text-sm text-gray-500">
+                          {uploadingLogo ? "Uploading..." : "Upload Company Logo"}
+                        </span>
+                        <span className="text-xs text-gray-400 mt-1">
+                          PNG, JPG up to 5MB
+                        </span>
+                      </label>
+                    </div>
+                  ) : (
+  <div className="mt-4 relative w-24 h-24">
+    <img
+      src={logoPreview}
+      alt="Company Logo Preview"
+      className="w-full h-full object-cover rounded border"
+    />
+    <button
+      type="button"
+      onClick={removeLogo}
+      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+    >
+      <X size={14} />
+    </button>
+  </div>
+
+                  )}
+                </div>
+              </>
             )}
           </>
         )}
@@ -195,9 +314,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 cursor-pointer rounded hover:bg-blue-700 transition"
+          disabled={uploadingLogo}
+          className="w-full bg-blue-600 text-white py-2 cursor-pointer rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {type === "signin" ? "Sign in" : "Register"}
+          {uploadingLogo ? "Uploading..." : type === "signin" ? "Sign in" : "Register"}
         </button>
       </form>
 
