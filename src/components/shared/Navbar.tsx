@@ -25,7 +25,7 @@ export default function Navbar() {
     if (user.role === "recruiter") {
       router.push("/recruiter-dashboard");
     } else if (user.role === "job_seeker") {
-      router.push("/find-jobs");
+      router.push("/jobseeker-dashboard");
     } else {
       router.push("/");
     }

@@ -27,7 +27,8 @@ interface FormData {
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
-  const { register, handleSubmit, reset, watch, setValue } = useForm<FormData>();
+  const { register, handleSubmit, reset, watch, setValue } =
+    useForm<FormData>();
   const { data: session, update } = useSession();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -57,7 +58,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
+    );
     formData.append("folder", "company-logos");
 
     try {
@@ -81,7 +85,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     }
   };
 
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -237,7 +243,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Company Logo
                   </label>
-                  
+
                   {!logoPreview ? (
                     <div className="relative">
                       <input
@@ -256,7 +262,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                       >
                         <Upload className="w-6 h-6 text-gray-400 mb-2" />
                         <span className="text-sm text-gray-500">
-                          {uploadingLogo ? "Uploading..." : "Upload Company Logo"}
+                          {uploadingLogo
+                            ? "Uploading..."
+                            : "Upload Company Logo"}
                         </span>
                         <span className="text-xs text-gray-400 mt-1">
                           PNG, JPG up to 5MB
@@ -264,23 +272,22 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                       </label>
                     </div>
                   ) : (
-  <div className="mt-4 relative w-24 h-24">
-    <Image
-      src={logoPreview}
-      alt="Company Logo Preview"
-      width={100}
-      height={100}
-      className="w-full h-full object-cover rounded border"
-    />
-    <button
-      type="button"
-      onClick={removeLogo}
-      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
-    >
-      <X size={14} />
-    </button>
-  </div>
-
+                    <div className="mt-4 relative w-24 h-24">
+                      <Image
+                        src={logoPreview}
+                        alt="Company Logo Preview"
+                        width={100}
+                        height={100}
+                        className="w-full h-full object-cover rounded border"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeLogo}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
                   )}
                 </div>
               </>
@@ -320,7 +327,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           disabled={uploadingLogo}
           className="w-full bg-blue-600 text-white py-2 cursor-pointer rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {uploadingLogo ? "Uploading..." : type === "signin" ? "Sign in" : "Register"}
+          {uploadingLogo
+            ? "Uploading..."
+            : type === "signin"
+            ? "Sign in"
+            : "Register"}
         </button>
       </form>
 

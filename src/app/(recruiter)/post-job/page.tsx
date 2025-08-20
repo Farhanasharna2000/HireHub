@@ -123,7 +123,7 @@ try {
 
       if (result.success) {
         toast.success("Job posted successfully!");
-        router.push("/recruiter-dashboard");
+        router.push("/manage-jobs");
       } else {
         toast.error(result.error || "Failed to post job.");
       }

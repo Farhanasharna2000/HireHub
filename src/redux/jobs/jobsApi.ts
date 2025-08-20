@@ -1,3 +1,4 @@
+import { Job } from "@/types/job";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface JobResponse {
@@ -5,6 +6,7 @@ interface JobResponse {
   id?: string;
   error?: string;
 }
+
 export interface JobFormInputs {
   jobTitle: string;
   location: string;
@@ -12,25 +14,38 @@ export interface JobFormInputs {
   jobType: string;
   description: string;
   requirements: string;
+  companyName?: string | null;
+  companyLogo?: string | null;
   salaryMin?: string;
   salaryMax?: string;
 }
+
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   tagTypes: ["Jobs"],
   endpoints: (builder) => ({
+    // Create a new job
     createJob: builder.mutation<JobResponse, JobFormInputs>({
       query: (jobData) => ({
         url: "jobs",
         method: "POST",
         body: jobData,
       }),
+      invalidatesTags: ["Jobs"],
     }),
-    getCompanyJobs: builder.query({
+
+    // ✅ API returns { jobs: Job[] }
+    getCompanyJobs: builder.query<{ jobs: Job[] }, string>({
       query: (companyName) => `jobs?companyName=${companyName}`,
+      providesTags: ["Jobs"],
     }),
-   updateJobStatus: builder.mutation<JobResponse, { id: string; status: "Active" | "Closed" }>({
+
+    // Update job status
+    updateJobStatus: builder.mutation<
+      JobResponse,
+      { id: string; status: "Active" | "Closed" }
+    >({
       query: ({ id, status }) => ({
         url: `jobs?id=${id}`,
         method: "PATCH",
@@ -38,6 +53,8 @@ export const jobsApi = createApi({
       }),
       invalidatesTags: ["Jobs"],
     }),
+
+    // Delete job
     deleteJob: builder.mutation<JobResponse, string>({
       query: (id) => ({
         url: `jobs?id=${id}`,
@@ -48,4 +65,9 @@ export const jobsApi = createApi({
   }),
 });
 
-export const { useCreateJobMutation,useGetCompanyJobsQuery,useUpdateJobStatusMutation,useDeleteJobMutation } = jobsApi;
+export const {
+  useCreateJobMutation,
+  useGetCompanyJobsQuery,
+  useUpdateJobStatusMutation,
+  useDeleteJobMutation,
+} = jobsApi;

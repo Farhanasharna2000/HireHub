@@ -6,19 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store"; 
 import { useGetCompanyJobsQuery, useDeleteJobMutation, useUpdateJobStatusMutation } from "@/redux/jobs/jobsApi"; 
 import toast from "react-hot-toast";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import Link from "next/link";
+import { Job } from "@/types/job";
 
-interface Job {
-  _id?: string;
-  id?: string;
-  jobTitle: string;          
-  companyName: string;
-  status: "Active" | "Closed" ; 
-  applicants: number;
-  location?: string;
-  category?: string;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
-}
+
 
 export default function JobManagementDashboard() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -34,34 +26,34 @@ export default function JobManagementDashboard() {
   const user = useSelector((state: RootState) => state.user);
 
   // Fetch jobs for the logged-in recruiter's company
-  const { 
-    data: jobsData, 
-    isLoading, 
-    error,
-    refetch 
-  } = useGetCompanyJobsQuery(user.companyName, {
-    skip: !user.companyName || user.role !== 'recruiter'
-  });
+ const { 
+  data: jobsData, 
+  isLoading, 
+  error,
+  refetch 
+} = useGetCompanyJobsQuery(user.companyName ?? "", {
+  skip: !user.companyName || user.role !== 'recruiter'
+});
 
   const [updateJobStatus, { isLoading: updatingStatus }] = useUpdateJobStatusMutation();
   const [deleteJob, { isLoading: deletingJob }] = useDeleteJobMutation();
 
   // Transform the jobs data to match our interface
-  const jobs: Job[] = useMemo(() => {
-    if (!jobsData?.jobs) return [];
+ const jobs: Job[] = useMemo(() => {
+  if (!jobsData?.jobs) return [];
 
-    return jobsData.jobs.map((job: Job) => ({
-      id: job._id || job.id,
-      jobTitle: job.jobTitle || "",
-      companyName: job.companyName || "",
-      status: job.status || "Active",  
-      applicants: job.applicants || 0,
-      location: job.location,
-      category: job.category,
-      createdAt: job.createdAt,
-      updatedAt: job.updatedAt,
-    }));
-  }, [jobsData]);
+  return jobsData.jobs.map((job: Job) => ({
+    id: job._id || job.id,
+    jobTitle: job.jobTitle || "",
+    companyName: job.companyName || "",  // <-- default to empty string
+    status: job.status || "Active",  
+    applicants: job.applicants || 0,
+    location: job.location || "",
+    category: job.category || "",
+    createdAt: job.createdAt,
+    updatedAt: job.updatedAt,
+  }));
+}, [jobsData]);
 
   // Filter and sort jobs
   const filteredAndSortedJobs = useMemo(() => {
@@ -70,8 +62,8 @@ export default function JobManagementDashboard() {
     let filtered = jobs.filter((job) => {
       const matchesStatus = statusFilter === "All" || job.status === statusFilter;
       const matchesSearch =
-        job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.companyName.toLowerCase().includes(searchTerm.toLowerCase());
+  job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  (job.companyName ?? "").toLowerCase().includes(searchTerm.toLowerCase());
       return matchesStatus && matchesSearch;
     });
 
@@ -151,6 +143,7 @@ export default function JobManagementDashboard() {
   if (error) {
     return (
       <DashboardLayout activeMenu="manage-jobs">
+        
         <div className="container mx-auto p-8">
           <div className="text-center py-16">
             <h3 className="text-2xl font-semibold text-red-600 mb-2">Error Loading Jobs</h3>
@@ -169,6 +162,9 @@ export default function JobManagementDashboard() {
 
   return (
     <DashboardLayout activeMenu="manage-jobs">
+        {isLoading ? (
+              <LoadingSpinner />
+            ) : (
       <div className="container mx-auto p-8">
         {/* Header */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 mb-8">
@@ -178,10 +174,13 @@ export default function JobManagementDashboard() {
                 Job Management
               </h1>
             </div>
-            <button className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2">
+            <Link href="/post-job">
+               <button className="group bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2">
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
               Add New Job
             </button>
+            </Link>
+         
           </div>
 
           {/* Filters */}
@@ -402,6 +401,7 @@ export default function JobManagementDashboard() {
           }
         `}</style>
       </div>
+            )}
     </DashboardLayout>
   );
 }

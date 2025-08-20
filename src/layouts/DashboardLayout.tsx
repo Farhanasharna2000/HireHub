@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useEffect, useState, MouseEvent } from "react";
 import { Building2, LogOut, Menu, X } from "lucide-react";
-import { NAVIGATION_MENU } from "@/constants/features";
+import { NAVIGATION_MENU,NAVIGATION_MENU_JOBSEEKER } from "@/constants/features";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -126,20 +126,36 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
         {/* Navigation */}
         <nav className="p-4 space-y-2">
-          {NAVIGATION_MENU.map((item: NavigationItem) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavigation(item.id)}
-              className={`flex items-center px-3 py-2 w-full text-left rounded-lg ${
-                activeNavItem === item.id
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              <item.icon className="w-5 h-5" />
-              {!sidebarCollapsed && <span className="ml-3">{item.name}</span>}
-            </button>
-          ))}
+        {user.role === "recruiter"
+  ? NAVIGATION_MENU.map((item: NavigationItem) => (
+      <button
+        key={item.id}
+        onClick={() => handleNavigation(item.id)}
+        className={`flex items-center px-3 py-2 w-full text-left rounded-lg ${
+          activeNavItem === item.id
+            ? "bg-blue-100 text-blue-700"
+            : "text-gray-600 hover:bg-gray-50"
+        }`}
+      >
+        <item.icon className="w-5 h-5" />
+        {!sidebarCollapsed && <span className="ml-3">{item.name}</span>}
+      </button>
+    ))
+  : NAVIGATION_MENU_JOBSEEKER.map((item: NavigationItem) => (
+      <button
+        key={item.id}
+        onClick={() => handleNavigation(item.id)}
+        className={`flex items-center px-3 py-2 w-full text-left rounded-lg ${
+          activeNavItem === item.id
+            ? "bg-blue-100 text-blue-700"
+            : "text-gray-600 hover:bg-gray-50"
+        }`}
+      >
+        <item.icon className="w-5 h-5" />
+        {!sidebarCollapsed && <span className="ml-3">{item.name}</span>}
+      </button>
+    ))}
+
         </nav>
 
         {/* Logout */}

@@ -87,8 +87,10 @@ export const authConfig: NextAuthOptions = {
           email: user_email,
           image,
           username: name,
-          role: "job_seeker", // default role
-          companyName: null, // default company name
+          role: "recruiter", // default role
+          companyName: 'N/A', // default company name
+          companyLogo: null, // default company logo
+
         };
         const insertResult = await usersCollection.insertOne(newUser);
         existingUser = { ...newUser, _id: insertResult.insertedId };
