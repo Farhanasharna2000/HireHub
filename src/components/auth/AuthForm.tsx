@@ -12,6 +12,8 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/features/user/userSlice";
 import Link from "next/link";
 import Image from "next/image";
+import Footer from "../shared/Footer";
+import Navbar from "../shared/Navbar";
 
 interface AuthFormProps {
   type: "register" | "signin";
@@ -184,6 +186,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="max-w-sm mx-auto my-10 p-6 border rounded shadow">
       <h2 className="text-2xl mb-4 text-center font-bold">
         {type === "signin" ? "Sign In" : "Register"}
@@ -357,6 +361,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         )}
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

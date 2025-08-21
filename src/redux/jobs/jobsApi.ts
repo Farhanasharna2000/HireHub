@@ -25,41 +25,28 @@ export const jobsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   tagTypes: ["Jobs"],
   endpoints: (builder) => ({
-    // Create a new job
     createJob: builder.mutation<JobResponse, JobFormInputs>({
-      query: (jobData) => ({
-        url: "jobs",
-        method: "POST",
-        body: jobData,
-      }),
+      query: (jobData) => ({ url: "jobs", method: "POST", body: jobData }),
       invalidatesTags: ["Jobs"],
     }),
 
-    // ✅ API returns { jobs: Job[] }
+    getAllJobs: builder.query<{ jobs: Job[] }, void>({
+      query: () => "jobs",
+      providesTags: ["Jobs"],
+    }),
+
     getCompanyJobs: builder.query<{ jobs: Job[] }, string>({
       query: (companyName) => `jobs?companyName=${companyName}`,
       providesTags: ["Jobs"],
     }),
 
-    // Update job status
-    updateJobStatus: builder.mutation<
-      JobResponse,
-      { id: string; status: "Active" | "Closed" }
-    >({
-      query: ({ id, status }) => ({
-        url: `jobs?id=${id}`,
-        method: "PATCH",
-        body: { status },
-      }),
+    updateJobStatus: builder.mutation<JobResponse, { id: string; status: "Active" | "Closed" }>({
+      query: ({ id, status }) => ({ url: `jobs?id=${id}`, method: "PATCH", body: { status } }),
       invalidatesTags: ["Jobs"],
     }),
 
-    // Delete job
     deleteJob: builder.mutation<JobResponse, string>({
-      query: (id) => ({
-        url: `jobs?id=${id}`,
-        method: "DELETE",
-      }),
+      query: (id) => ({ url: `jobs?id=${id}`, method: "DELETE" }),
       invalidatesTags: ["Jobs"],
     }),
   }),
@@ -70,4 +57,5 @@ export const {
   useGetCompanyJobsQuery,
   useUpdateJobStatusMutation,
   useDeleteJobMutation,
+  useGetAllJobsQuery,
 } = jobsApi;

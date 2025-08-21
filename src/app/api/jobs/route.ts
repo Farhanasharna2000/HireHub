@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import { ObjectId } from "mongodb";
 
-interface Job  {
+interface Job {
   title: string;
   companyName: string;
   companyLogo: string;
@@ -10,17 +10,27 @@ interface Job  {
   applicants: number;
   location?: string;
   category?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date | undefined;
+  updatedAt: string | Date | undefined;
 }
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const companyName = searchParams.get("companyName");
+    const mode = searchParams.get("mode"); // new param for distinct
 
     const jobsCollection = await dbConnect("jobs");
 
+    if (mode === "companies") {
+      // ✅ Return all unique company names
+      const companies = await jobsCollection.distinct("companyName", {
+        companyName: { $ne: null },
+      });
+      return NextResponse.json({ success: true, companies });
+    }
+
+    // ✅ Existing logic for fetching jobs (unchanged)
     const query: Partial<Job> = {};
     if (companyName) {
       query.companyName = companyName; // filter by company
@@ -44,16 +54,19 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const jobsCollection = await dbConnect("jobs");
-    
+
     const jobData = await req.json();
-    
+
     const result = await jobsCollection.insertOne({
       ...jobData,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
-    return NextResponse.json({ success: true, id: result.insertedId }, { status: 201 });
+    return NextResponse.json(
+      { success: true, id: result.insertedId },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Failed to insert job:", error);
     return NextResponse.json(
@@ -73,14 +86,14 @@ export async function PATCH(req: NextRequest) {
 
     if (!id || !status) {
       return NextResponse.json(
-        { success: false, error: "Missing id or status" }, 
+        { success: false, error: "Missing id or status" },
         { status: 400 }
       );
     }
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { success: false, error: "Invalid job ID format" }, 
+        { success: false, error: "Invalid job ID format" },
         { status: 400 }
       );
     }
@@ -92,7 +105,7 @@ export async function PATCH(req: NextRequest) {
 
     if (result.modifiedCount === 0) {
       return NextResponse.json(
-        { success: false, error: "Job not found" }, 
+        { success: false, error: "Job not found" },
         { status: 404 }
       );
     }
@@ -101,7 +114,7 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("Failed to update job status:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to update status" }, 
+      { success: false, error: "Failed to update status" },
       { status: 500 }
     );
   }
@@ -115,14 +128,14 @@ export async function DELETE(req: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { success: false, error: "Missing id" }, 
+        { success: false, error: "Missing id" },
         { status: 400 }
       );
     }
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { success: false, error: "Invalid job ID format" }, 
+        { success: false, error: "Invalid job ID format" },
         { status: 400 }
       );
     }
@@ -131,7 +144,7 @@ export async function DELETE(req: NextRequest) {
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
-        { success: false, error: "Job not found" }, 
+        { success: false, error: "Job not found" },
         { status: 404 }
       );
     }
@@ -140,7 +153,7 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     console.error("Failed to delete job:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to delete job" }, 
+      { success: false, error: "Failed to delete job" },
       { status: 500 }
     );
   }

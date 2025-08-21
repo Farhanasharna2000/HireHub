@@ -16,8 +16,9 @@ import JobCard from "@/components/jobseeker/JobCard";
 import SearchHeader from "@/components/jobseeker/SearchHeader";
 import { CATEGORIES, JOB_TYPES } from "@/constants/features";
 import { useRouter } from "next/navigation";
-import { mockJobs } from "@/constants/jobs";
 import HomeLayout from "@/layouts/HomeLayout";
+import { useGetAllJobsQuery } from "@/redux/jobs/jobsApi";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // ------------------ Types ------------------
 interface Filters {
@@ -27,9 +28,11 @@ interface Filters {
   type: string;
   minSalary: string;
   maxSalary: string;
+  company: string;
 }
 
 interface ExpandedSections {
+  companies: boolean;
   jobType: boolean;
   salary: boolean;
   categories: boolean;
@@ -43,148 +46,153 @@ interface FilterContentProps {
   filters: Filters;
 }
 
-// ------------------ FilterContent Component ------------------
-
+// ------------------ FilterContent ------------------
 const FilterContent: React.FC<FilterContentProps> = ({
   toggleSection,
   clearAllFilters,
   expandedSections,
   handleFilterChange,
   filters,
-}) => (
-  <div className="space-y-6">
-    {/* Clear Filters */}
-    <div className="flex justify-between items-center">
-      <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={clearAllFilters}
-        className="text-blue-600 hover:text-blue-700"
-      >
-        Clear All
-      </Button>
-    </div>
+}) => {
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearAllFilters}
+          className="text-blue-600 hover:text-blue-700"
+        >
+          Clear All
+        </Button>
+      </div>
 
-    {/* Categories */}
-    <div className="border-b border-gray-200 pb-4">
-      <button
-        onClick={() => toggleSection("categories")}
-        className="flex justify-between items-center w-full py-2 text-left"
-      >
-        <span className="font-medium text-gray-900">Categories</span>
-        {expandedSections.categories ? (
-          <ChevronUp className="w-4 h-4" />
-        ) : (
-          <ChevronDown className="w-4 h-4" />
-        )}
-      </button>
-      {expandedSections.categories && (
-        <div className="mt-3 space-y-2">
-          {CATEGORIES.map((category) => (
-            <label key={category.value} className="flex items-center">
-              <input
-                type="checkbox"
-                checked={filters.category === category.value}
-                onChange={(e) =>
-                  handleFilterChange(
-                    "category",
-                    e.target.checked ? category.value : ""
-                  )
-                }
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="ml-2 text-sm text-gray-700">
-                {category.label}
-              </span>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
-
-    {/* Job Type */}
-    <div className="border-b border-gray-200 pb-4">
-      <button
-        onClick={() => toggleSection("jobType")}
-        className="flex justify-between items-center w-full py-2 text-left"
-      >
-        <span className="font-medium text-gray-900">Job Type</span>
-        {expandedSections.jobType ? (
-          <ChevronUp className="w-4 h-4" />
-        ) : (
-          <ChevronDown className="w-4 h-4" />
-        )}
-      </button>
-      {expandedSections.jobType && (
-        <div className="mt-3 space-y-2">
-          {JOB_TYPES.map((type) => (
-            <label key={type.value} className="flex items-center">
-              <input
-                type="checkbox"
-                checked={filters.type === type.value}
-                onChange={(e) =>
-                  handleFilterChange("type", e.target.checked ? type.value : "")
-                }
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="ml-2 text-sm text-gray-700">{type.label}</span>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
-
-    {/* Salary Range */}
-    <div>
-      <button
-        onClick={() => toggleSection("salary")}
-        className="flex justify-between items-center w-full py-2 text-left"
-      >
-        <span className="font-medium text-gray-900">Salary Range</span>
-        {expandedSections.salary ? (
-          <ChevronUp className="w-4 h-4" />
-        ) : (
-          <ChevronDown className="w-4 h-4" />
-        )}
-      </button>
-      {expandedSections.salary && (
-        <div className="mt-3 space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Minimum
-            </label>
-            <Input
-              type="number"
-              placeholder="$0"
-              value={filters.minSalary}
-              onChange={(e) => handleFilterChange("minSalary", e.target.value)}
-              className="w-full"
-            />
+      {/* Categories */}
+      <div className="border-b border-gray-200 pb-4">
+        <button
+          onClick={() => toggleSection("categories")}
+          className="flex justify-between items-center w-full py-2 text-left"
+        >
+          <span className="font-medium text-gray-900">Categories</span>
+          {expandedSections.categories ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </button>
+        {expandedSections.categories && (
+          <div className="mt-3 space-y-2">
+            {CATEGORIES.map((category) => (
+              <label key={category.value} className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={filters.category === category.value}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "category",
+                      e.target.checked ? category.value : ""
+                    )
+                  }
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">
+                  {category.label}
+                </span>
+              </label>
+            ))}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Maximum
-            </label>
-            <Input
-              type="number"
-              placeholder="$200,000"
-              value={filters.maxSalary}
-              onChange={(e) => handleFilterChange("maxSalary", e.target.value)}
-              className="w-full"
-            />
+        )}
+      </div>
+
+      {/* Job Type */}
+      <div className="border-b border-gray-200 pb-4">
+        <button
+          onClick={() => toggleSection("jobType")}
+          className="flex justify-between items-center w-full py-2 text-left"
+        >
+          <span className="font-medium text-gray-900">Job Type</span>
+          {expandedSections.jobType ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </button>
+        {expandedSections.jobType && (
+          <div className="mt-3 space-y-2">
+            {JOB_TYPES.map((type) => (
+              <label key={type.value} className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={filters.type === type.value}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "type",
+                      e.target.checked ? type.value : ""
+                    )
+                  }
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">{type.label}</span>
+              </label>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      {/* Salary Range */}
+      <div>
+        <button
+          onClick={() => toggleSection("salary")}
+          className="flex justify-between items-center w-full py-2 text-left"
+        >
+          <span className="font-medium text-gray-900">Salary Range</span>
+          {expandedSections.salary ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </button>
+        {expandedSections.salary && (
+          <div className="mt-3 space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Minimum
+              </label>
+              <Input
+                type="number"
+                placeholder="$0"
+                value={filters.minSalary}
+                onChange={(e) =>
+                  handleFilterChange("minSalary", e.target.value)
+                }
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Maximum
+              </label>
+              <Input
+                type="number"
+                placeholder="$200,000"
+                value={filters.maxSalary}
+                onChange={(e) =>
+                  handleFilterChange("maxSalary", e.target.value)
+                }
+                className="w-full"
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-// ------------------ Main Dashboard Component ------------------
-
+// ------------------ Main Component ------------------
 const JobSeekerDashboard: React.FC = () => {
   const router = useRouter();
-  const [jobs] = useState(mockJobs);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
@@ -195,26 +203,25 @@ const JobSeekerDashboard: React.FC = () => {
     type: "",
     minSalary: "",
     maxSalary: "",
+    company: "",
   });
 
+  const { data, isLoading } = useGetAllJobsQuery();
+  const jobs = data?.jobs || [];
+
   const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
+    companies: true,
     jobType: true,
     salary: true,
     categories: true,
   });
 
   const handleFilterChange = (field: keyof Filters, value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
   const toggleSection = (section: keyof ExpandedSections) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
+    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
   const clearAllFilters = () => {
@@ -225,9 +232,11 @@ const JobSeekerDashboard: React.FC = () => {
       type: "",
       minSalary: "",
       maxSalary: "",
+      company: "",
     });
   };
 
+  // ------------------ Mobile Filter ------------------
   const MobileFilterOverlay: React.FC = () => {
     if (!showMobileFilter) return null;
     return (
@@ -263,124 +272,144 @@ const JobSeekerDashboard: React.FC = () => {
     );
   };
 
+  // ------------------ Filter Jobs by Selected Filters ------------------
+  const filteredJobs = jobs.filter((job) => {
+    if (
+      filters.keywords &&
+      !job.jobTitle.toLowerCase().includes(filters.keywords.toLowerCase())
+    )
+      return false;
+    if (
+      filters.location &&
+      !job.location?.toLowerCase().includes(filters.location.toLowerCase())
+    )
+      return false;
+    if (filters.category && job.category !== filters.category) return false;
+    if (filters.type && job.jobType !== filters.type) return false;
+    if (filters.company && job.companyName !== filters.company) return false;
+    if (filters.minSalary && Number(job.salaryMin) < Number(filters.minSalary))
+      return false;
+    if (filters.maxSalary && Number(job.salaryMax) > Number(filters.maxSalary))
+      return false;
+    return true;
+  });
+
   return (
-    <>
-      <HomeLayout>
-        <div className="bg-gray-50">
-          <SearchHeader
-            filters={filters}
-            handleFilterChange={handleFilterChange}
-          />
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex gap-8">
-              {/* Desktop Sidebar Filters */}
-              <div className="hidden lg:block w-80 flex-shrink-0">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
-                  <FilterContent
-                    toggleSection={toggleSection}
-                    clearAllFilters={clearAllFilters}
-                    expandedSections={expandedSections}
-                    handleFilterChange={handleFilterChange}
-                    filters={filters}
-                  />
-                </div>
-              </div>
-
-              {/* Main Content */}
-              <div className="flex-1">
-                {/* Results Header */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <p className="text-lg text-gray-900">
-                      Showing{" "}
-                      <span className="font-semibold text-blue-600">
-                        {jobs.length}
-                      </span>{" "}
-                      Jobs
-                    </p>
-
-                    <div className="flex items-center gap-4">
-                      {/* Mobile Filter Button */}
-                      <Button
-                        variant="outline"
-                        className="lg:hidden"
-                        onClick={() => setShowMobileFilter(true)}
-                      >
-                        <Filter className="w-4 h-4 mr-2" />
-                        Filters
-                      </Button>
-
-                      {/* View Mode Toggle */}
-                      <div className="flex gap-1 border border-gray-200 rounded-lg p-1">
-                        <Button
-                          size="sm"
-                          onClick={() => setViewMode("grid")}
-                          className={`${
-                            viewMode === "grid"
-                              ? "bg-blue-500 px-3"
-                              : "bg-white text-black hover:text-white border px-3"
-                          }`}
-                        >
-                          <Grid className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => setViewMode("list")}
-                          className={`${
-                            viewMode === "list"
-                              ? "bg-blue-500 px-3"
-                              : "bg-white text-black hover:text-white border px-3"
-                          }`}
-                        >
-                          <List className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Job Grid/List */}
-                {jobs.length === 0 ? (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Search className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      No jobs found
-                    </h3>
-                    <p className="text-gray-600 mb-6">
-                      Try adjusting your search criteria or filters
-                    </p>
-                    <Button variant="outline" onClick={clearAllFilters}>
-                      Clear All Filters
-                    </Button>
-                  </div>
-                ) : (
-                  <div
-                    className={
-                      viewMode === "grid"
-                        ? "grid grid-cols-1 md:grid-cols-2 gap-6"
-                        : "space-y-4"
-                    }
-                  >
-                    {jobs.map((job) => (
-                      <JobCard
-                        key={job.id}
-                        job={job}
-                        viewMode={viewMode}
-                        onClick={() => router.push(`/find-jobs/${job.id}`)}
-                      />
-                    ))}
-                  </div>
-                )}
+    <HomeLayout>
+      <div className="bg-gray-50">
+        <SearchHeader
+          filters={filters}
+          handleFilterChange={handleFilterChange}
+        />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex gap-8">
+            {/* Sidebar */}
+            <div className="hidden lg:block w-80 flex-shrink-0">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
+                <FilterContent
+                  toggleSection={toggleSection}
+                  clearAllFilters={clearAllFilters}
+                  expandedSections={expandedSections}
+                  handleFilterChange={handleFilterChange}
+                  filters={filters}
+                />
               </div>
             </div>
-          </div>
 
-          <MobileFilterOverlay />
+            {/* Main Content */}
+            <div className="flex-1">
+              {/* Header */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <p className="text-lg text-gray-900">
+                    Showing{" "}
+                    <span className="font-semibold text-blue-600">
+                      {filteredJobs.length}
+                    </span>{" "}
+                    Jobs
+                  </p>
+
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant="outline"
+                      className="lg:hidden"
+                      onClick={() => setShowMobileFilter(true)}
+                    >
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filters
+                    </Button>
+
+                    <div className="flex gap-1 border border-gray-200 rounded-lg p-1">
+                      <Button
+                        size="sm"
+                        onClick={() => setViewMode("grid")}
+                        className={`${
+                          viewMode === "grid"
+                            ? "bg-blue-500 px-3"
+                            : "bg-white text-black hover:text-white border px-3"
+                        }`}
+                      >
+                        <Grid className="w-5 h-5" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => setViewMode("list")}
+                        className={`${
+                          viewMode === "list"
+                            ? "bg-blue-500 px-3"
+                            : "bg-white text-black hover:text-white border px-3"
+                        }`}
+                      >
+                        <List className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Job Grid/List */}
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : filteredJobs.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    No jobs found
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Try adjusting your search criteria or filters
+                  </p>
+                  <Button variant="outline" onClick={clearAllFilters}>
+                    Clear All Filters
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  className={
+                    viewMode === "grid"
+                      ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+                      : "space-y-4"
+                  }
+                >
+                  {filteredJobs.map((job) => (
+                    <JobCard
+                      key={job._id}
+                      job={job}
+                      viewMode={viewMode}
+                      onClick={() => router.push(`/find-jobs/${job._id}`)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </HomeLayout>
-    </>
+
+        <MobileFilterOverlay />
+      </div>
+    </HomeLayout>
   );
 };
 

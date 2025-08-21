@@ -1,13 +1,20 @@
+
 export interface Job {
   _id?: string;
   id?: string;
-  jobTitle: string;          
-  companyName?: string | null; 
-  companyLogo?: string  | null;
-  status: "Active" | "Closed" ; 
+  jobTitle: string;
+  companyName?: string | null;
+  companyLogo?: string | null;
+  status: "Active" | "Closed";
   applicants: number;
   location?: string;
   category?: string;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
+  jobType?: string;
+  requirements?: string;
+  description?: string;
+  salaryMin?: string;
+  salaryMax?: string;
+  createdAt?: string | Date | undefined;
+  updatedAt?: string | Date | undefined;
 }
+
