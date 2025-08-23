@@ -41,12 +41,12 @@ const teamSizeOptions = [
 ];
 
 const CompanyProfilePage = () => {
-  const { data: session, update, status } = useSession(); 
+  const { data: session, update, status } = useSession();
   const dispatch = useDispatch();
   const [logoPreview, setLogoPreview] = useState<string>("");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-const isLoading = status === "loading"; 
+  const isLoading = status === "loading";
   const { register, handleSubmit, setValue, watch, reset } =
     useForm<CompanyProfileForm>({
       defaultValues: {
@@ -75,8 +75,6 @@ const isLoading = status === "loading";
     if (u.teamSize) setValue("teamSize", u.teamSize);
     if (u.foundedYear) setValue("foundedYear", u.foundedYear);
   }, [session, setValue]);
-
-  const formData = watch();
 
   const uploadToCloudinary = async (file: File): Promise<string> => {
     const data = new FormData();
@@ -185,9 +183,9 @@ const isLoading = status === "loading";
 
   return (
     <DashboardLayout activeMenu="company-profile">
-         {isLoading ? (
-                      <Loading />
-                    ) : (
+      {isLoading ? (
+        <Loading />
+      ) : (
         <div className="conatiner mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-8">
@@ -198,7 +196,7 @@ const isLoading = status === "loading";
               Company Profile
             </h1>
             <p className="text-gray-600 text-lg">
-              Build your company's professional presence
+              Build your company&apos;s professional presence
             </p>
           </div>
 
@@ -400,7 +398,7 @@ const isLoading = status === "loading";
             </div>
           </div>
         </div>
-        )}
+      )}
     </DashboardLayout>
   );
 };
