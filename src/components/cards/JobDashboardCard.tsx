@@ -1,19 +1,16 @@
+import { Job } from "@/types/job";
 import { Briefcase } from "lucide-react";
 import React from "react";
-
-interface Job {
-  title: string;
-  location: string;
-  createdAt: string;
-  isClosed?: boolean;  // optional now
-}
 
 interface JobDashboardCardProps {
   job: Job;
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
+function formatDate(dateInput: string | Date | undefined): string {
+  if (!dateInput) return "N/A"; // fallback if it's undefined
+
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
     month: "short",
@@ -29,7 +26,7 @@ const JobDashboardCard: React.FC<JobDashboardCardProps> = ({ job }) => {
           <Briefcase className="w-5 h-5 text-gray-700" />
         </div>
         <div>
-          <h4 className="font-semibold">{job.title}</h4>
+          <h4 className="font-semibold">{job.jobTitle}</h4>
           <p className="text-sm text-gray-500">
             {job.location} • {formatDate(job.createdAt)}
           </p>
@@ -38,12 +35,12 @@ const JobDashboardCard: React.FC<JobDashboardCardProps> = ({ job }) => {
       <div>
         <span
           className={`px-3 py-1 text-xs font-medium rounded-full ${
-            !job.isClosed
+            job.status === "Active"
               ? "bg-green-100 text-green-700"
               : "bg-gray-100 text-gray-600"
           }`}
         >
-          {job.isClosed ? "Closed" : "Active"}
+          {job.status}
         </span>
       </div>
     </div>
