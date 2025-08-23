@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import dbConnect, { collectionNamesObj } from "./dbConnect";
+import { ObjectId } from "mongodb";
 
 declare module "next-auth" {
   interface User {
@@ -10,7 +11,11 @@ declare module "next-auth" {
     role?: string;
     companyName?: string;
     companyLogo?: string;
-
+    website?: string;
+    location?: string;
+    description?: string;
+    teamSize?: string;
+    foundedYear?: number;
   }
   interface Session {
     user: {
@@ -22,11 +27,14 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       companyLogo?: string | null;
-
+      website?: string | null;
+      location?: string | null;
+      description?: string | null;
+      teamSize?: string | null;
+      foundedYear?: number | null;
     };
   }
 }
-
 export const authConfig: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -126,21 +134,29 @@ export const authConfig: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.username = user.username;
-        token.role = user.role;
-        token.companyName = user.companyName;
-        token.companyLogo = user.companyLogo;
       }
       return token;
     },
 
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.username = token.username as string;
-        session.user.role = token.role as string;
-        session.user.companyName = token.companyName as string;
-        session.user.companyLogo = token.companyLogo as string | null;
+      if (token?.id && session.user) {
+        const usersCollection = dbConnect(collectionNamesObj.usersCollection);
+        const freshUser = await usersCollection.findOne({
+          _id: new ObjectId(token.id as string),
+        });
+
+        if (freshUser) {
+          session.user.id = freshUser._id.toString();
+          session.user.username = freshUser.username;
+          session.user.role = freshUser.role;
+          session.user.companyName = freshUser.companyName;
+          session.user.companyLogo = freshUser.companyLogo;
+          session.user.website = freshUser.website;
+          session.user.location = freshUser.location;
+          session.user.description = freshUser.description;
+          session.user.teamSize = freshUser.teamSize;
+          session.user.foundedYear = freshUser.foundedYear;
+        }
       }
       return session;
     },

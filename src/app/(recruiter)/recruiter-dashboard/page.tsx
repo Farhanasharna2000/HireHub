@@ -3,10 +3,10 @@
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { Briefcase, Building2, CheckCircle2, Plus, TrendingUp, Users } from "lucide-react";
 import JobDashboardCard from "@/components/cards/JobDashboardCard";
 import ApplicantDashboardCard from "@/components/cards/ApplicantDashboardCard";
+import Loading from "@/app/loading";
 
 interface CardProps {
   className?: string;
@@ -176,7 +176,7 @@ const RecruiterDashboard: React.FC = () => {
   return (
     <DashboardLayout activeMenu="recruiter-dashboard">
       {isLoading ? (
-        <LoadingSpinner />
+        <Loading />
       ) : (
         <div className="space-y-6">
           {/* Stats */}
