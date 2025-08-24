@@ -1,5 +1,4 @@
-"use client";
-
+'use client'
 import React from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -59,6 +58,7 @@ const JobDetailsPage: React.FC = () => {
     return postedDate.toLocaleDateString();
   };
 
+
   return (
     <HomeLayout>
       <div className="min-h-screen flex justify-center items-center px-4">
@@ -67,7 +67,7 @@ const JobDetailsPage: React.FC = () => {
           <div className="flex items-center space-x-4 mb-6">
             <Image
               src={job.companyLogo || "/default-logo.png"}
-              alt={`${job.companyName} logo`}
+                alt={`${job.companyName} logo`}
               width={100}
               height={100}
               className="w-20 h-20 object-contain rounded-md"
@@ -89,7 +89,7 @@ const JobDetailsPage: React.FC = () => {
             <p><strong>Job Type:</strong> {job.jobType}</p>
             <p>
               <strong>Salary:</strong>{" "}
-              {job.salaryMin && job.salaryMax
+           {job.salaryMin && job.salaryMax
                 ? `৳${job.salaryMin} - ৳${job.salaryMax}`
                 : "Negotiable"}
             </p>

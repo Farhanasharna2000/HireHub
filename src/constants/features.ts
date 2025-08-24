@@ -1,7 +1,7 @@
 import {
   Award,
   BarChart3,
-  BookMarkedIcon,
+  Bookmark,
   Briefcase,
   Building,
   Clock,
@@ -79,8 +79,8 @@ export const NAVIGATION_MENU = [
 //navigation items jobseeker
 export const NAVIGATION_MENU_JOBSEEKER = [
   { id: "jobseeker-dashboard", name: "Dashboard", icon: LayoutDashboard },
-  { id: "find-jobs", name: "Find Jobs", icon: Search },
-  { id: "saved-jobs", name: "Saved Jobs", icon: BookMarkedIcon },
+  { id: "applied-jobs", name: "Applied Jobs", icon: Briefcase },
+  { id: "saved-jobs", name: "Saved Jobs", icon: Bookmark },
   { id: "profile", name: "My Profile", icon: User },
 ];
 
