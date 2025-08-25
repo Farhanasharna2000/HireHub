@@ -47,7 +47,7 @@ const CompanyProfilePage = () => {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isLoading = status === "loading";
-  const { register, handleSubmit, setValue, watch, reset } =
+  const { register, handleSubmit, setValue, reset } =
     useForm<CompanyProfileForm>({
       defaultValues: {
         companyName: "",
@@ -156,7 +156,7 @@ const CompanyProfilePage = () => {
           })
         );
 
-        // 🔥 update NextAuth session too
+        //  update NextAuth session too
         await update({
           companyName: data.companyName,
           companyLogo: data.companyLogo || null,

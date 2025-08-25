@@ -9,8 +9,6 @@ import {
   X,
   Check,
   User,
-  MapPin,
-  FileText,
   Link,
   Github,
   Linkedin,
@@ -19,7 +17,6 @@ import toast from "react-hot-toast";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { useDispatch } from "react-redux";
 import {
-  setUser,
   updateJobseekerProfile,
 } from "@/redux/features/user/userSlice";
 import Image from "next/image";
@@ -77,7 +74,7 @@ const JobseekerProfilePage = () => {
       setImagePreview(u.image);
       setValue("image", u.image);
     }
-    if (u.username) setValue("username", u.username); // ✅ use session.user.username
+    if (u.username) setValue("username", u.username); 
     if (u.location) setValue("location", u.location);
     if (u.bio) setValue("bio", u.bio);
 
@@ -333,7 +330,7 @@ const JobseekerProfilePage = () => {
                 {fields.map((field, index) => (
                   <div key={field.id} className="flex gap-2">
                     <input
-                      {...register(`skills.${index}.value` as const)} // ✅ register object value
+                      {...register(`skills.${index}.value` as const)} 
                       placeholder="Enter a skill"
                       className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
