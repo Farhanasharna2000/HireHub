@@ -15,10 +15,13 @@ export const middleware = async (req: NextRequest) => {
 };
 export const config = {
   matcher: [
-    "/dashboard",
+    "/jobseeker-dashboard",
+    "/applied-jobs",
+    "/saved-jobs",
     "/recruiter-dashboard",
     "/post-job",
     "/manage-jobs",
+    "/profile"
     //  '/checkout/:path*'
   ],
 };

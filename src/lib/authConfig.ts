@@ -16,6 +16,15 @@ declare module "next-auth" {
     description?: string;
     teamSize?: string;
     foundedYear?: number;
+    // Jobseeker specific fields
+    bio?: string;
+    skills?: string[];
+    resumeUrl?: string;
+    socialLinks?: {
+      linkedin?: string;
+      github?: string;
+      portfolio?: string;
+    };
   }
   interface Session {
     user: {
@@ -23,7 +32,6 @@ declare module "next-auth" {
       username?: string;
       role?: string;
       companyName?: string;
-      name?: string | null;
       email?: string | null;
       image?: string | null;
       companyLogo?: string | null;
@@ -32,9 +40,19 @@ declare module "next-auth" {
       description?: string | null;
       teamSize?: string | null;
       foundedYear?: number | null;
+      // Jobseeker specific fields
+      bio?: string | null;
+      skills?: string[] | null;
+      resumeUrl?: string | null;
+      socialLinks?: {
+        linkedin?: string;
+        github?: string;
+        portfolio?: string;
+      } | null;
     };
   }
 }
+
 export const authConfig: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -58,6 +76,11 @@ export const authConfig: NextAuthOptions = {
             role: user.role,
             companyName: user.companyName,
             companyLogo: user.companyLogo || null,
+            // Include jobseeker fields
+            bio: user.bio,
+            skills: user.skills,
+            resumeUrl: user.resumeUrl,
+            socialLinks: user.socialLinks,
           };
         } else {
           return null;
@@ -98,7 +121,15 @@ export const authConfig: NextAuthOptions = {
           role: "recruiter", // default role
           companyName: 'N/A', // default company name
           companyLogo: null, // default company logo
-
+          // Initialize jobseeker fields
+          bio: null,
+          skills: [],
+          resumeUrl: null,
+          socialLinks: {
+            linkedin: null,
+            github: null,
+            portfolio: null,
+          },
         };
         const insertResult = await usersCollection.insertOne(newUser);
         existingUser = { ...newUser, _id: insertResult.insertedId };
@@ -128,6 +159,12 @@ export const authConfig: NextAuthOptions = {
       user.role = existingUser.role;
       user.companyName = existingUser.companyName;
       user.companyLogo = existingUser.companyLogo;
+      // Add jobseeker fields
+      user.bio = existingUser.bio;
+      user.skills = existingUser.skills;
+      user.resumeUrl = existingUser.resumeUrl;
+      user.socialLinks = existingUser.socialLinks;
+      
       return true;
     },
 
@@ -156,6 +193,12 @@ export const authConfig: NextAuthOptions = {
           session.user.description = freshUser.description;
           session.user.teamSize = freshUser.teamSize;
           session.user.foundedYear = freshUser.foundedYear;
+          // Add jobseeker specific fields
+           session.user.image = freshUser.image || session.user.image;
+          session.user.bio = freshUser.bio;
+          session.user.skills = freshUser.skills;
+          session.user.resumeUrl = freshUser.resumeUrl;
+          session.user.socialLinks = freshUser.socialLinks;
         }
       }
       return session;
