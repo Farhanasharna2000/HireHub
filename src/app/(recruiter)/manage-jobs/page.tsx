@@ -58,7 +58,7 @@ export default function JobManagementDashboard() {
     if (!jobsData?.jobs) return [];
 
     return jobsData.jobs.map((job: Job) => ({
-      id: job._id || job.id,
+      _id: job._id ,
       jobTitle: job.jobTitle || "",
       companyName: job.companyName || "", // <-- default to empty string
       status: job.status || "Active",
@@ -124,7 +124,7 @@ export default function JobManagementDashboard() {
   };
 
   const handleStatusChange = async (jobId: string) => {
-    const job = jobs.find((j) => j.id === jobId);
+    const job = jobs.find((j) => j._id === jobId);
     if (!job) return;
 
     const newStatus = job.status === "Active" ? "Closed" : "Active";
@@ -307,7 +307,7 @@ export default function JobManagementDashboard() {
                       ))
                     : paginatedJobs.map((job, index) => (
                         <div
-                          key={job.id}
+                          key={job._id}
                           className="grid grid-cols-12 gap-4 px-8 py-6 hover:bg-blue-50/50 transition-all duration-300 group"
                           style={{
                             animationDelay: `${index * 100}ms`,
@@ -350,7 +350,7 @@ export default function JobManagementDashboard() {
                             {job.status === "Active" ? (
                               <button
                                 onClick={() =>
-                                  job.id && handleStatusChange(job.id)
+                                  job._id && handleStatusChange(job._id)
                                 }
                                 className="flex items-center gap-2 px-3 py-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-all duration-300 text-sm font-medium"
                               >
@@ -360,7 +360,7 @@ export default function JobManagementDashboard() {
                             ) : (
                               <button
                                 onClick={() =>
-                                  job.id && handleStatusChange(job.id)
+                                  job._id && handleStatusChange(job._id)
                                 }
                                 className="flex items-center gap-2 px-3 py-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-300 text-sm font-medium"
                               >
@@ -369,7 +369,7 @@ export default function JobManagementDashboard() {
                               </button>
                             )}
                             <button
-                              onClick={() => job.id && handleDeleteJob(job.id)}
+                              onClick={() => job._id && handleDeleteJob(job._id)}
                               className="flex items-center gap-2 px-3 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-300 text-sm font-medium"
                             >
                               <Trash2 className="w-4 h-4" />
