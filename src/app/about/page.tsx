@@ -198,22 +198,22 @@ const About: React.FC = () => {
               {
                 name: "Alex Thompson",
                 role: "CEO & Founder",
-                avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+                avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
               },
               {
                 name: "Sarah Kim",
                 role: "CTO",
-                avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+                avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
               },
               {
                 name: "Michael Rodriguez",
                 role: "Head of Product",
-                avatar: "https://randomuser.me/api/portraits/men/76.jpg",
+                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
               },
               {
                 name: "Emily Chen",
                 role: "VP of Marketing",
-                avatar: "https://randomuser.me/api/portraits/women/65.jpg",
+                avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
               },
             ].map((member, idx) => (
               <div
@@ -225,7 +225,7 @@ const About: React.FC = () => {
                   alt={member.name}
                   width={100}
                   height={100}
-                  className="size-20 mx-auto rounded-full object-contain shadow-md border-2 border-white"
+                  className="size-20 mx-auto rounded-full object-cover shadow-md border-2 border-white"
                 />
 
                 <h3 className="font-bold">{member.name}</h3>

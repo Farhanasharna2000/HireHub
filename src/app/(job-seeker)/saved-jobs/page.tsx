@@ -31,18 +31,7 @@ const SavedJobs = () => {
       <p className="text-gray-600 dark:text-gray-400 text-center max-w-md mb-8 leading-relaxed">
         Start exploring job opportunities and save the ones that catch your interest. 
         Your saved jobs will appear here for easy access.
-      </p>
-      
-      <button 
-        onClick={() => window.location.href = '/find-jobs'}
-        className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-      >
-        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-        <span className="relative flex items-center gap-2">
-          <SearchIcon className="w-5 h-5" />
-          Browse Jobs
-        </span>
-      </button>
+      </p>            
     </div>
   );
   return (
