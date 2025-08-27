@@ -114,7 +114,8 @@ try {
     const newjobdata = {
       ...data,
       status: "Active",                
-      applicants: 0,             
+      applicants: 0,
+      isApplied:false,           
       companyName: user?.companyName,
       companyLogo: user?.companyLogo,  
 

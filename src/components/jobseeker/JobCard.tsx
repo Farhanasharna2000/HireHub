@@ -1,7 +1,11 @@
+'use client'
 import React from "react";
 import { Clock, DollarSign, MapPin, Bookmark } from "lucide-react";
 import Image from "next/image";
 import { Job } from "@/types/job";
+import { useToggleSavedJobMutation } from "@/redux/jobs/jobsApi";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface JobCardProps {
   job: Job;
@@ -11,6 +15,13 @@ interface JobCardProps {
 }
 
 const JobCard: React.FC<JobCardProps> = ({ job, onClick, viewMode }) => {
+  const [toggleSavedJob] = useToggleSavedJobMutation();
+  const user = useSelector((state: RootState) => state.user);
+
+  //  Make sure user.email is string before using it
+  const isSaved =
+    user.email !== null ? job.savedUsers?.includes(user.email) : false;
+
   // Handle null logo
   const logoSrc =
     job.companyLogo ||
@@ -42,6 +53,16 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick, viewMode }) => {
     return postedDate.toLocaleDateString();
   };
 
+  const handleBookmark = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      if (!user.email) return; // ✅ ensures email is not null
+      await toggleSavedJob({ id: job._id, userEmail: user.email }).unwrap();
+    } catch (err) {
+      console.error("Failed to toggle saved job", err);
+    }
+  };
+
   return (
     <div
       onClick={onClick}
@@ -51,10 +72,18 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick, viewMode }) => {
     >
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
 
-      {/* Bookmark */}
-      <button className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white shadow hover:bg-blue-50 transition">
-        <Bookmark className="w-5 h-5 text-gray-500 hover:text-blue-600 transition-colors" />
-      </button>
+      {user.role === "job_seeker" && (
+        <button
+          onClick={handleBookmark}
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white shadow hover:bg-blue-50 transition"
+        >
+          <Bookmark
+            className={`w-5 h-5 transition-colors ${
+              isSaved ? "text-blue-600 fill-blue-600" : "text-gray-500"
+            }`}
+          />
+        </button>
+      )}
 
       <div
         className={

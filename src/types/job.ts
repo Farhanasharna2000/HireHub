@@ -1,7 +1,6 @@
 
 export interface Job {
-  _id?: string;
-  id?: string;
+  _id: string ;
   jobTitle: string;
   companyName?: string | null;
   companyLogo?: string | null;
@@ -10,6 +9,8 @@ export interface Job {
   location?: string;
   category?: string;
   jobType?: string;
+  savedUsers?: string[];
+  isApplied?: boolean;
   requirements?: string;
   description?: string;
   salaryMin?: string;

@@ -76,17 +76,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
+// PATCH: Toggle saved job for a specific user
 export async function PATCH(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
     const jobsCollection = await dbConnect("jobs");
     const body = await req.json();
-    const { status } = body;
+    const { id, userEmail, status } = body; // get user's email
 
-    if (!id || !status) {
+    if (!id || !userEmail) {
       return NextResponse.json(
-        { success: false, error: "Missing id or status" },
+        { success: false, error: "Missing job id or user email" },
         { status: 400 }
       );
     }
@@ -98,27 +97,40 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const result = await jobsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { status, updatedAt: new Date() } }
-    );
+    const job = await jobsCollection.findOne({ _id: new ObjectId(id) });
+    if (!job) return NextResponse.json({ success: false, error: "Job not found" }, { status: 404 });
 
-    if (result.modifiedCount === 0) {
-      return NextResponse.json(
-        { success: false, error: "Job not found" },
-        { status: 404 }
-      );
+    let updatedSavedUsers: string[] = job.savedUsers || [];
+
+    if (updatedSavedUsers.includes(userEmail)) {
+      updatedSavedUsers = updatedSavedUsers.filter(email => email !== userEmail);
+    } else {
+      updatedSavedUsers.push(userEmail);
     }
 
-    return NextResponse.json({ success: true, id });
+    const updateFields: Record<string, any> = {
+      savedUsers: updatedSavedUsers,
+      updatedAt: new Date(),
+    };
+
+    if (status) updateFields.status = status;
+
+    await jobsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateFields }
+    );
+
+    return NextResponse.json({ success: true, savedUsers: updatedSavedUsers });
   } catch (error) {
-    console.error("Failed to update job status:", error);
+    console.error("Failed to update job:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to update status" },
+      { success: false, error: "Failed to update job" },
       { status: 500 }
     );
   }
 }
+
+
 
 export async function DELETE(req: NextRequest) {
   try {

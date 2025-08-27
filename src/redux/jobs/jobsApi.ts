@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 interface JobResponse {
   success: boolean;
   id?: string;
+  savedUsers?: string[];
   error?: string;
 }
 
@@ -40,8 +41,27 @@ export const jobsApi = createApi({
       providesTags: ["Jobs"],
     }),
 
-    updateJobStatus: builder.mutation<JobResponse, { id: string; status: "Active" | "Closed" }>({
-      query: ({ id, status }) => ({ url: `jobs?id=${id}`, method: "PATCH", body: { status } }),
+    updateJobStatus: builder.mutation<
+      JobResponse,
+      { id: string; status: "Active" | "Closed" }
+    >({
+      query: ({ id, status }) => ({
+        url: `jobs?id=${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["Jobs"],
+    }),
+
+    toggleSavedJob: builder.mutation<
+      JobResponse,
+      { id: string; userEmail: string }
+    >({
+      query: ({ id, userEmail }) => ({
+        url: "jobs",
+        method: "PATCH",
+        body: { id, userEmail }, // ✅ send logged-in user's email
+      }),
       invalidatesTags: ["Jobs"],
     }),
 
@@ -58,4 +78,5 @@ export const {
   useUpdateJobStatusMutation,
   useDeleteJobMutation,
   useGetAllJobsQuery,
+  useToggleSavedJobMutation,
 } = jobsApi;

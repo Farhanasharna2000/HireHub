@@ -346,7 +346,7 @@ const JobseekerProfilePage = () => {
 
                 <button
                   type="button"
-                  onClick={() => append({ value: "" })} // ✅ append object not string
+                  onClick={() => append({ value: "" })} //  append object not string
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
                 >
                   + Add Skill
