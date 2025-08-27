@@ -47,7 +47,7 @@ export const registerUser = async (payload: RegisterPayload) => {
     password: hashedPassword,
     role,
     companyName: role === "recruiter" ? companyName : null,
-    companyLogo: role === "recruiter" ? companyLogo || null : null, // ✅ save logo
+    companyLogo: role === "recruiter" ? companyLogo || null : null, //  save logo
   };
 
   const result = await usersCollection.insertOne(newUser);

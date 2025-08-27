@@ -60,7 +60,7 @@ export const jobsApi = createApi({
       query: ({ id, userEmail }) => ({
         url: "jobs",
         method: "PATCH",
-        body: { id, userEmail }, // ✅ send logged-in user's email
+        body: { id, userEmail }, // send logged-in user's email
       }),
       invalidatesTags: ["Jobs"],
     }),

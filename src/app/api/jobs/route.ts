@@ -23,14 +23,14 @@ export async function GET(req: NextRequest) {
     const jobsCollection = await dbConnect("jobs");
 
     if (mode === "companies") {
-      // ✅ Return all unique company names
+      //  Return all unique company names
       const companies = await jobsCollection.distinct("companyName", {
         companyName: { $ne: null },
       });
       return NextResponse.json({ success: true, companies });
     }
 
-    // ✅ Existing logic for fetching jobs (unchanged)
+    //  Existing logic for fetching jobs (unchanged)
     const query: Partial<Job> = {};
     if (companyName) {
       query.companyName = companyName; // filter by company
@@ -98,17 +98,23 @@ export async function PATCH(req: NextRequest) {
     }
 
     const job = await jobsCollection.findOne({ _id: new ObjectId(id) });
-    if (!job) return NextResponse.json({ success: false, error: "Job not found" }, { status: 404 });
+    if (!job)
+      return NextResponse.json(
+        { success: false, error: "Job not found" },
+        { status: 404 }
+      );
 
     let updatedSavedUsers: string[] = job.savedUsers || [];
 
     if (updatedSavedUsers.includes(userEmail)) {
-      updatedSavedUsers = updatedSavedUsers.filter(email => email !== userEmail);
+      updatedSavedUsers = updatedSavedUsers.filter(
+        (email) => email !== userEmail
+      );
     } else {
       updatedSavedUsers.push(userEmail);
     }
 
-    const updateFields: Record<string, any> = {
+    const updateFields: Partial<Job> & { savedUsers: string[] } = {
       savedUsers: updatedSavedUsers,
       updatedAt: new Date(),
     };
@@ -129,8 +135,6 @@ export async function PATCH(req: NextRequest) {
     );
   }
 }
-
-
 
 export async function DELETE(req: NextRequest) {
   try {

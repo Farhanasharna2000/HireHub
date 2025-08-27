@@ -159,7 +159,7 @@ const JobseekerProfilePage = () => {
     if (!session?.user?.id) return;
 
     try {
-      // ✅ unwrap skill objects into strings
+      // unwrap skill objects into strings
       const filteredSkills = data.skills
         .map((s) => s.value.trim())
         .filter((s) => s !== "");

@@ -4,7 +4,7 @@ import "./globals.css";
 import NextAuthSessionProvider from "@/Providers/NextAuthSessionProvider";
 import { Toaster } from "react-hot-toast";
 
-// ✅ Configure Poppins font
+// Configure Poppins font
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],

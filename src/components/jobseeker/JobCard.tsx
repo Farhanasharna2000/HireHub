@@ -56,7 +56,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick, viewMode }) => {
   const handleBookmark = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      if (!user.email) return; // ✅ ensures email is not null
+      if (!user.email) return; //  ensures email is not null
       await toggleSavedJob({ id: job._id, userEmail: user.email }).unwrap();
     } catch (err) {
       console.error("Failed to toggle saved job", err);
