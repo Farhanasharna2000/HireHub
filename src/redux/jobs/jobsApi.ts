@@ -7,7 +7,10 @@ interface JobResponse {
   savedUsers?: string[];
   error?: string;
 }
-
+export interface AppliedJobsResponse {
+  success: boolean;
+  jobs: Job[];
+}
 export interface JobFormInputs {
   jobTitle: string;
   location: string;
@@ -65,6 +68,27 @@ export const jobsApi = createApi({
       invalidatesTags: ["Jobs"],
     }),
 
+// redux/jobs/jobsApi.ts
+applyJob: builder.mutation<
+  JobResponse,
+  { id: string; userEmail: string; availability: string; resume?: string | null }
+>({
+  query: ({ id, userEmail, availability, resume }) => ({
+    url: "jobs",
+    method: "PUT",
+    body: { id, userEmail, availability, resume },
+  }),
+  invalidatesTags: ["Jobs"],
+}),
+
+getAppliedJobs: builder.query<AppliedJobsResponse, string>({
+  query: (userEmail) => ({
+    url: `applied-jobs?userEmail=${userEmail}`,
+    method: "GET",
+  }),
+  providesTags: ["Jobs"],
+}),
+
     deleteJob: builder.mutation<JobResponse, string>({
       query: (id) => ({ url: `jobs?id=${id}`, method: "DELETE" }),
       invalidatesTags: ["Jobs"],
@@ -79,4 +103,6 @@ export const {
   useDeleteJobMutation,
   useGetAllJobsQuery,
   useToggleSavedJobMutation,
+  useApplyJobMutation,
+  useGetAppliedJobsQuery,
 } = jobsApi;

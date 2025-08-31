@@ -62,7 +62,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     formData.append("file", file);
     formData.append(
       "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
+      process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_PRESET || ""
     );
     formData.append("folder", "company-logos");
 

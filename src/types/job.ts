@@ -10,6 +10,7 @@ export interface Job {
   category?: string;
   jobType?: string;
   savedUsers?: string[];
+  appliedUsers?: string[];
   isApplied?: boolean;
   requirements?: string;
   description?: string;

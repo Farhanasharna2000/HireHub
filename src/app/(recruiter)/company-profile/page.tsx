@@ -81,7 +81,7 @@ const CompanyProfilePage = () => {
     data.append("file", file);
     data.append(
       "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
+      process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_PRESET || ""
     );
     data.append("folder", "company-logos");
 

@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
       ...jobData,
       createdAt: new Date(),
       updatedAt: new Date(),
+      savedUsers: [],
+  appliedUsers: [],
     });
 
     return NextResponse.json(
@@ -131,6 +133,99 @@ export async function PATCH(req: NextRequest) {
     console.error("Failed to update job:", error);
     return NextResponse.json(
       { success: false, error: "Failed to update job" },
+      { status: 500 }
+    );
+  }
+}
+// pages/api/jobs.ts
+
+export async function PUT(req: NextRequest) {
+  try {
+    const jobsCollection = await dbConnect("jobs");
+    const usersCollection = await dbConnect("users");
+    const { id, userEmail, availability, resume } = await req.json();
+
+    if (!id || !userEmail) {
+      return NextResponse.json(
+        { success: false, error: "Missing job id or user email" },
+        { status: 400 }
+      );
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid job ID format" },
+        { status: 400 }
+      );
+    }
+
+    const job = await jobsCollection.findOne({ _id: new ObjectId(id) });
+    if (!job) {
+      return NextResponse.json(
+        { success: false, error: "Job not found" },
+        { status: 404 }
+      );
+    }
+
+    const user = await usersCollection.findOne({ email: userEmail });
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    let updatedAppliedUsers: string[] = job.appliedUsers || [];
+
+    if (!updatedAppliedUsers.includes(userEmail)) {
+      updatedAppliedUsers.push(userEmail);
+
+      const applicationDetails = {
+        userEmail,
+        availability,
+        resume: resume || user.resumeUrl || null,
+        appliedAt: new Date(),
+      };
+
+      await jobsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            appliedUsers: updatedAppliedUsers,
+            isApplied: true,
+            updatedAt: new Date(),
+          },
+          $inc: { applicants: 1 },
+          $addToSet: { applications: applicationDetails },
+        }
+      );
+
+      if (resume && resume !== user.resumeUrl) {
+        try {
+          new URL(resume);
+          if (resume.startsWith("https://res.cloudinary.com/davrpeomq/raw/upload/")) {
+            await usersCollection.updateOne(
+              { email: userEmail },
+              { $set: { resumeUrl: resume, updatedAt: new Date() } }
+            );
+            console.log(`Updated resumeUrl for user ${userEmail}: ${resume}`);
+          } else {
+            console.warn("Resume URL may not be a valid Cloudinary raw URL:", resume);
+          }
+        } catch {
+          console.error("Invalid resume URL:", resume);
+        }
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      appliedUsers: updatedAppliedUsers,
+    });
+  } catch (error) {
+    console.error("Failed to apply job:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to apply job" },
       { status: 500 }
     );
   }
