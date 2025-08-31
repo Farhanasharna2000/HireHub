@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import HomeLayout from "@/layouts/HomeLayout";
 import { useApplyJobMutation, useGetAllJobsQuery } from "@/redux/jobs/jobsApi";
 import Loading from "@/app/loading";
-import { Clock, MapPin, DollarSign, Users, Star, FileText, X, Upload } from "lucide-react";
+import { Clock, MapPin, DollarSign, Users, Star, FileText, X } from "lucide-react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -31,7 +31,7 @@ const JobDetailsPage: React.FC = () => {
   const [existingResumeUrl, setExistingResumeUrl] = useState<string>("");
   const [applyJob] = useApplyJobMutation();
   const user = useSelector((state: RootState) => state.user);
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
 
   const jobs = data?.jobs || [];
   const job = jobs.find((job) => job._id === id);
@@ -95,7 +95,7 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = await uploadToCloudinary(file, "resumes", "raw");
     console.log("Uploaded resume URL:", url);
 
-    // ✅ Save as a custom resume (for this application only)
+    //  Save as a custom resume (for this application only)
     setCustomResume({
       name: file.name,
       size: (file.size / 1024).toFixed(1) + " KB",
@@ -240,7 +240,7 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
               {/* Requirements */}
               <section className="py-6">
-                <h3 className="text-lg font-semibold border-l-4 border-pink-600 pl-3 mb-4">What We're Looking For</h3>
+                <h3 className="text-lg font-semibold border-l-4 border-pink-600 pl-3 mb-4">  What We&apos;re Looking For</h3>
                 <p className="text-gray-700 bg-pink-50 p-4 rounded whitespace-pre-line">{job.requirements}</p>
               </section>
             </div>

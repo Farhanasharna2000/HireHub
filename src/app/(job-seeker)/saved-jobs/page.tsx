@@ -5,7 +5,7 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import { useGetAllJobsQuery } from "@/redux/jobs/jobsApi";
 import { RootState } from "@/redux/store";
 import { Job } from "@/types/job";
-import { BookmarkIcon, SearchIcon } from "lucide-react";
+import { BookmarkIcon} from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
 

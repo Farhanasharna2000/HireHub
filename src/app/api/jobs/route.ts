@@ -137,7 +137,7 @@ export async function PATCH(req: NextRequest) {
     );
   }
 }
-// pages/api/jobs.ts
+
 
 export async function PUT(req: NextRequest) {
   try {
@@ -175,7 +175,7 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    let updatedAppliedUsers: string[] = job.appliedUsers || [];
+    const updatedAppliedUsers: string[] = job.appliedUsers || [];
 
     if (!updatedAppliedUsers.includes(userEmail)) {
       updatedAppliedUsers.push(userEmail);
