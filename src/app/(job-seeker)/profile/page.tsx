@@ -1,4 +1,3 @@
-// components/JobseekerProfilePage.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -17,10 +16,11 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateJobseekerProfile } from "@/redux/features/user/userSlice";
 import Image from "next/image";
 import Loading from "@/app/loading";
+import { RootState } from "@/redux/store";
 
 interface JobseekerForm {
   username: string;
@@ -39,6 +39,8 @@ interface JobseekerForm {
 const JobseekerProfilePage = () => {
   const { data: session, update, status } = useSession();
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
+
   const isLoading = status === "loading";
   const [imagePreview, setImagePreview] = useState<string>("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -60,95 +62,60 @@ const JobseekerProfilePage = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "skills",
-  });
+  const { fields, append, remove } = useFieldArray({ control, name: "skills" });
 
+  // Sync form with Redux & session
   useEffect(() => {
-    if (!session?.user) return;
-    const u = session.user;
+    if (!user) return;
 
-    if (u.image) {
-      setImagePreview(u.image);
-      setValue("image", u.image);
-    }
-    if (u.username) setValue("username", u.username);
-    if (u.location) setValue("location", u.location);
-    if (u.bio) setValue("bio", u.bio);
+    setValue("username", user.username || "");
+    setValue("bio", user.bio || "");
+    setValue("location", user.location || "");
+    setValue("image", user.image || "");
+    setValue("resumeUrl", user.resumeUrl || "");
+    setValue("socialLinks", user.socialLinks || {});
+    setValue(
+      "skills",
+      user.skills?.map((s: string) => ({ value: s })) || [{ value: "" }]
+    );
 
-    if (u.skills && u.skills.length > 0) {
-      const skillObjects = u.skills.map((s: string) => ({ value: s }));
-      setValue("skills", skillObjects);
-    }
+    setImagePreview(user.image || "");
+    setExistingResumeUrl(user.resumeUrl || "");
+  }, [user, setValue]);
 
-    if (u.resumeUrl) {
-      console.log("Existing resume URL:", u.resumeUrl);
-      setValue("resumeUrl", u.resumeUrl);
-      setExistingResumeUrl(u.resumeUrl);
-    }
-
-    if (u.socialLinks) {
-      setValue("socialLinks", u.socialLinks);
-    }
-  }, [session, setValue]);
-
-  const uploadToCloudinary = async (
-    file: File,
-    folder: string,
-    resourceType: "image" | "raw"
-  ): Promise<string> => {
-    const data = new FormData();
-    data.append("file", file);
-    data.append(
+  // Cloudinary uploader
+  const uploadToCloudinary = async (file: File, folder: string, type: "image" | "raw") => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
       "upload_preset",
-      resourceType === "image"
+      type === "image"
         ? process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_PRESET || "recruiter_logo_preset"
         : process.env.NEXT_PUBLIC_CLOUDINARY_RESUME_PRESET || "resume_upload_preset"
     );
-    data.append("folder", folder);
+    formData.append("folder", folder);
 
-    try {
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${
-          process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "davrpeomq"
-        }/${resourceType}/upload`,
-        { method: "POST", body: data }
-      );
-      if (!res.ok) {
-        throw new Error(`Cloudinary upload failed: ${res.statusText}`);
-      }
-      const result = await res.json();
-      if (!result.secure_url) {
-        throw new Error("No secure URL returned from Cloudinary");
-      }
-      console.log("Cloudinary response:", result);
-      return result.secure_url;
-    } catch (error) {
-      console.error("Cloudinary upload error:", error);
-      throw error;
-    }
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${type}/upload`,
+      { method: "POST", body: formData }
+    );
+    const result = await res.json();
+    if (!result.secure_url) throw new Error("Cloudinary upload failed");
+    return result.secure_url;
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size exceeds 5MB limit");
-      return;
-    }
+    if (!file.type.startsWith("image/")) return toast.error("Invalid image file");
+    if (file.size > 5 * 1024 * 1024) return toast.error("Image too large");
 
     try {
       const url = await uploadToCloudinary(file, "images", "image");
       setImagePreview(url);
       setValue("image", url);
-      toast.success("Image uploaded!");
-    } catch (error) {
-      console.error("Image upload error:", error);
+      toast.success("Profile image uploaded!");
+    } catch {
       toast.error("Image upload failed");
     }
   };
@@ -156,89 +123,48 @@ const JobseekerProfilePage = () => {
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const allowedTypes = [
+    const allowed = [
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error("Please upload a PDF or Word document");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size exceeds 5MB limit");
-      return;
-    }
+    if (!allowed.includes(file.type)) return toast.error("Invalid resume format");
+    if (file.size > 5 * 1024 * 1024) return toast.error("Resume too large");
 
     try {
       const url = await uploadToCloudinary(file, "resumes", "raw");
-      console.log("Uploaded resume URL:", url);
-      setValue("resumeUrl", url);
       setResumeFile(file);
       setExistingResumeUrl(url);
+      setValue("resumeUrl", url);
       toast.success("Resume uploaded!");
-    } catch (error) {
-      console.error("Resume upload error:", error);
+    } catch {
       toast.error("Resume upload failed");
     }
   };
 
   const onSubmit = async (data: JobseekerForm) => {
-    if (!session?.user?.id) {
-      toast.error("User not authenticated");
-      return;
-    }
+    if (!session?.user?.id) return toast.error("Not authenticated");
+
+    const filteredSkills = data.skills.map((s) => s.value.trim()).filter(Boolean);
+    const profileData = { ...data, skills: filteredSkills };
 
     try {
-      const filteredSkills = data.skills
-        .map((s) => s.value.trim())
-        .filter((s) => s !== "");
-
-      const profileData = {
-        ...data,
-        skills: filteredSkills,
-      };
-
       const res = await fetch("/api/jobseeker/update", {
         method: "POST",
-        body: JSON.stringify({ userId: session.user.id, ...profileData }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: session.user.id, ...profileData }),
       });
-
       const result = await res.json();
+      if (!result.success) return toast.error(result.error || "Update failed");
 
-      if (result.success) {
-        dispatch(
-          updateJobseekerProfile({
-            bio: data.bio,
-            skills: filteredSkills,
-            resumeUrl: data.resumeUrl,
-            location: data.location,
-            socialLinks: data.socialLinks,
-          })
-        );
-
-        await update({
-          username: data.username,
-          image: data.image,
-          bio: data.bio,
-          location: data.location,
-          skills: filteredSkills,
-          resumeUrl: data.resumeUrl,
-          socialLinks: data.socialLinks,
-        });
-
-        toast.success("Profile updated successfully!");
-      } else {
-        toast.error(result.error || "Failed to update profile");
-      }
-    } catch (err) {
-      console.error("Profile update error:", err);
+      dispatch(updateJobseekerProfile({ ...profileData }));
+      await update({ ...profileData });
+      toast.success("Profile updated!");
+    } catch {
       toast.error("Something went wrong");
     }
   };
-
+  
   return (
     <DashboardLayout activeMenu="profile">
       {isLoading ? (
