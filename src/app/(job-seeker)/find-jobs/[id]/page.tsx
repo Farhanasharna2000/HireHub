@@ -8,11 +8,11 @@ import { useApplyJobMutation, useGetAllJobsQuery } from "@/redux/jobs/jobsApi";
 import Loading from "@/app/loading";
 import { Clock, MapPin, DollarSign, Users, Star, FileText, X } from "lucide-react";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useSession } from "next-auth/react";
 import { Dialog, DialogHeader, DialogTitle, DialogContent } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import { updateJobseekerProfile } from "@/redux/features/user/userSlice";
 
 interface CustomResume {
   name: string;
@@ -31,19 +31,17 @@ const JobDetailsPage: React.FC = () => {
   const [existingResumeUrl, setExistingResumeUrl] = useState<string>("");
   const [applyJob] = useApplyJobMutation();
   const user = useSelector((state: RootState) => state.user);
-  const { data: session } = useSession();
+  const dispatch = useDispatch();
 
   const jobs = data?.jobs || [];
   const job = jobs.find((job) => job._id === id);
   const alreadyApplied = user.email ? job?.appliedUsers?.includes(user.email) : false;
 
+  // Load existing resume from Redux
   useEffect(() => {
-    if (session?.user?.resumeUrl) {
-      setExistingResumeUrl(session.user.resumeUrl);
-    }
-  }, [session]);
+    setExistingResumeUrl(user.resumeUrl || "");
+  }, [user.resumeUrl]);
 
-  // ✅ Cloudinary upload
   const uploadToCloudinary = async (
     file: File,
     folder: string,
@@ -73,44 +71,45 @@ const JobDetailsPage: React.FC = () => {
     return result.secure_url;
   };
 
-const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const allowedTypes = [
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  ];
-  if (!allowedTypes.includes(file.type)) {
-    toast.error("Please upload a PDF or Word document");
-    return;
-  }
-  if (file.size > 5 * 1024 * 1024) {
-    toast.error("File size exceeds 5MB limit");
-    return;
-  }
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please upload a PDF or Word document");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size exceeds 5MB limit");
+      return;
+    }
 
-  try {
-    const url = await uploadToCloudinary(file, "resumes", "raw");
-    console.log("Uploaded resume URL:", url);
+    try {
+      const url = await uploadToCloudinary(file, "resumes", "raw");
 
-    //  Save as a custom resume (for this application only)
-    setCustomResume({
-      name: file.name,
-      size: (file.size / 1024).toFixed(1) + " KB",
-      lastUsed: new Date().toLocaleDateString("en-GB"),
-      url,
-    });
+      // Update Redux userSlice instantly
+      dispatch(updateJobseekerProfile({ resumeUrl: url }));
+      setExistingResumeUrl(url);
 
-    toast.success("Resume uploaded!");
-  } catch (error) {
-    console.error("Resume upload error:", error);
-    toast.error("Resume upload failed");
-  }
-};
+      // Save as a custom resume (for this application only)
+      setCustomResume({
+        name: file.name,
+        size: (file.size / 1024).toFixed(1) + " KB",
+        lastUsed: new Date().toLocaleDateString("en-GB"),
+        url,
+      });
 
-
+      toast.success("Resume uploaded!");
+    } catch (error) {
+      console.error("Resume upload error:", error);
+      toast.error("Resume upload failed");
+    }
+  };
 
   const removeCustomResume = () => setCustomResume(null);
 
@@ -167,7 +166,6 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         </div>
       </HomeLayout>
     );
-
   return (
     <HomeLayout>
       <div className="min-h-screen bg-gray-50 py-10">
@@ -251,7 +249,7 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="max-w-md mx-auto p-0 overflow-hidden">
             <DialogHeader className="p-6 pb-4 border-b border-gray-100">
-              <DialogTitle className="text-xl font-semibold text-gray-900">Apply now</DialogTitle>
+              <DialogTitle className="text-xl font-semibold text-gray-900 cursor-pointer">Apply now</DialogTitle>
             </DialogHeader>
             <div className="p-6 space-y-6">
               {/* Resume Section */}
@@ -315,7 +313,7 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                           <p className="text-xs text-gray-500">{customResume.size}</p>
                         </div>
                       </div>
-                      <button onClick={removeCustomResume} className="text-gray-400 hover:text-gray-600">
+                      <button onClick={removeCustomResume} className="text-gray-400 hover:text-gray-600 cursor-pointer">
                         <X className="w-4 h-4" />
                       </button>
                     </div>
@@ -324,7 +322,7 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 {customResume && <p className="text-xs text-gray-500">Last used on {customResume.lastUsed}</p>}
               </div>
 
-              <Button onClick={handleSubmitApplication} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium">
+              <Button onClick={handleSubmitApplication} className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium">
                 Submit
               </Button>
             </div>
