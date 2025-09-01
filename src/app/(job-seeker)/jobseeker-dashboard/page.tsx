@@ -58,7 +58,7 @@ const JobSeekerDashboard: React.FC = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [user.email]);
 
   const quickActions = [
     { title: "Applied Jobs", icon: Plus, color: "bg-blue-100 text-blue-700", path: "/applied-jobs" },
