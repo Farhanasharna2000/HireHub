@@ -2,10 +2,10 @@
 
 ![HireHub Banner](/public/banner.png) 
 
+
+
 **HireHub** is a comprehensive job portal platform designed to connect job seekers with recruiters seamlessly. Job seekers can search, apply, and save jobs, while recruiters can post and manage job listings as well as showcase their company profiles.
 
-
----
 
 ## Features
 
@@ -22,14 +22,12 @@
 - Create and update company profile  
 - Manage company job postings efficiently  
 
----
 
 ## 🌍 Live Demo  
 
 Experience **HireHub** live:  
 ➡️ **[Click here to visit](https://hire-hub-beryl.vercel.app)**  
 
----
 ## 🛠 Tech Stack
 
 - **Frontend:** Next.js, React, Tailwind CSS, ShadCN UI
