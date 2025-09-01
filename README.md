@@ -1,6 +1,6 @@
 # 🚀 HireHub
 
-![HireHub Banner](/public/banner.png) 
+![HireHub Banner](/public/home.png) 
 
 
 
@@ -32,7 +32,7 @@ Experience **HireHub** live:
 
 - **Frontend:** Next.js, React, Tailwind CSS, ShadCN UI
 - **State Management:** Redux Toolkit, React Context
-- **Backend:** [HireHub API](https://hire-hub-beryl.vercel.app) (Node.js, Express)
+- **Backend:** Node.js, Express
 - **Authentication:** Next-Auth, JWT, bcryptjs
 - **Utilities:** clsx, framer-motion, react-hot-toast, react-hook-form
 - **Database:** MongoDB
