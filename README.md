@@ -31,7 +31,7 @@ Experience **HireHub** live:
 ## 🛠 Tech Stack
 
 - **Frontend:** Next.js, React, Tailwind CSS, ShadCN UI
-- **State Management:** Redux Toolkit, React Context
+- **State Management:** Redux Toolkit
 - **Backend:** Node.js, Express
 - **Authentication:** Next-Auth, JWT, bcryptjs
 - **Utilities:** clsx, framer-motion, react-hot-toast, react-hook-form
