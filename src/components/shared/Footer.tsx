@@ -1,15 +1,18 @@
-import {Facebook, Twitter, Linkedin, Mail } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-300 text-center py-10">
-      <div className="container mx-auto px-4 grid md:grid-cols-4 gap-8">
-        
+    <footer className="relative bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-gray-300">
+      <div className="absolute inset-0 bg-[url('/footer-bg.svg')] bg-cover bg-center opacity-10"></div>
+
+      <div className="relative container mx-auto px-6 py-14 grid gap-10 md:grid-cols-4">
         {/* Brand Info */}
         <div>
-      <h3 className="text-2xl font-bold text-white mb-3">HireHub</h3>
-          <p className="text-sm leading-relaxed">
+          <h1 className="text-3xl font-extrabold text-white mb-4">
+            <Link href="/">HireHub</Link>
+          </h1>
+          <p className="text-sm leading-relaxed max-w-xs">
             Connecting talented professionals with innovative companies
             worldwide. Your career success is our mission.
           </p>
@@ -17,63 +20,93 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div>
-          <h4 className="text-white text-lg font-semibold mb-4">
-            Quick Links
-          </h4>
-          <ul className="space-y-2">
+          <h2 className="text-white text-lg font-semibold mb-5">Quick Links</h2>
+          <ul className="space-y-2 text-sm">
+            {[
+              { href: "/", label: "Home" },
+              { href: "/find-jobs", label: "Jobs" },
+              { href: "/about", label: "About" },
+              { href: "/contact", label: "Contact" },
+            ].map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="hover:text-blue-500 transition-colors duration-300"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Contact Info */}
+        <div>
+          <h3 className="text-white text-lg font-semibold mb-5">Contact Us</h3>
+          <ul className="text-sm space-y-2">
             <li>
-              <Link href="/" className="hover:text-blue-500 transition">
-                Home
+              <span className="font-medium">Email:</span>{" "}
+              <Link
+                href="mailto:support@hirehub.com"
+                className="hover:text-blue-400 transition"
+              >
+                support@hirehub.com
               </Link>
             </li>
             <li>
-              <Link href="/find-jobs" className="hover:text-blue-500 transition">
-                Jobs
-              </Link>
+              <span className="font-medium">Phone:</span> +1 234 567 890
             </li>
             <li>
-              <Link href="/about" className="hover:text-blue-500 transition">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="hover:text-blue-500 transition">
-                Contact
-              </Link>
+              <span className="font-medium">Address:</span> 123 Innovation St,
+              New York, USA
             </li>
           </ul>
         </div>
 
-        {/* Contact */}
+        {/* Newsletter + Social */}
         <div>
-          <h4 className="text-white text-lg font-semibold mb-4">Contact Us</h4>
-          <p className="text-sm">Email: support@hirehub.com</p>
-          <p className="text-sm">Phone: +1 234 567 890</p>
-        </div>
+          <h4 className="text-white text-lg font-semibold mb-5">
+            Stay Connected
+          </h4>
+          <form className="flex bg-gray-800 rounded-lg overflow-hidden mb-5">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="px-3 py-2 w-full bg-transparent text-sm focus:outline-none"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 px-4 text-white text-sm font-medium hover:bg-blue-700 transition"
+            >
+              Subscribe
+            </button>
+          </form>
 
-        {/* Social Links */}
-        <div>
-          <h4 className="text-white text-lg font-semibold mb-4">Follow Us</h4>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center gap-4 justify-start">
             <Link href="#" className="hover:text-blue-500 transition">
-              <Facebook size={20} />
+              <Facebook size={22} />
             </Link>
-            <Link href="#" className="hover:text-blue-400 transition">
-              <Twitter size={20} />
+            <Link href="#" className="hover:text-sky-400 transition">
+              <Twitter size={22} />
             </Link>
             <Link href="#" className="hover:text-blue-600 transition">
-              <Linkedin size={20} />
+              <Linkedin size={22} />
             </Link>
-            <Link href="mailto:support@hirehub.com" className="hover:text-red-400 transition">
-              <Mail size={20} />
+            <Link
+              href="mailto:support@hirehub.com"
+              className="hover:text-red-400 transition"
+            >
+              <Mail size={22} />
             </Link>
           </div>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} HireHub. All rights reserved.
+      <div className="border-t border-gray-700/50 text-center py-5 text-sm text-gray-500">
+        © {new Date().getFullYear()} <span className="text-white">HireHub</span>.
+        All rights reserved.
       </div>
     </footer>
   );
