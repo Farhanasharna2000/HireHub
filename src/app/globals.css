@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -116,5 +116,50 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+
+/* marquee animation for testimonial */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+
+.pause-marquee:hover {
+  animation-play-state: paused;
+}
+
+.marquee-container {
+  mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    white 10%,
+    white 90%,
+    transparent
+  );
+  overflow: hidden;
+}
+
+/* Responsive animation speed */
+@media (max-width: 768px) {
+  .animate-marquee {
+    animation-duration: 30s;
+  }
+}
+
+@media (max-width: 480px) {
+  .animate-marquee {
+    animation-duration: 25s;
   }
 }

@@ -1,10 +1,9 @@
-
 export interface Job {
-  _id: string ;
+  _id: string;
   jobTitle: string;
   companyName?: string | null;
   companyLogo?: string | null;
-  status: "Active" | "Closed";
+  status: 'Active' | 'Closed';
   applicants: number;
   location?: string;
   category?: string;
@@ -19,4 +18,3 @@ export interface Job {
   createdAt?: string | Date | undefined;
   updatedAt?: string | Date | undefined;
 }
-

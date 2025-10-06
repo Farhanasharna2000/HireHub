@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import Image from "next/image";
-import { Menu } from "lucide-react";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
+import Image from 'next/image';
+import { Menu } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { RootState } from "@/redux/store";
+} from '@/components/ui/dropdown-menu';
+import { RootState } from '@/redux/store';
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-  const isLoading = status === "loading";
+  const isLoading = status === 'loading';
   const user = useSelector((state: RootState) => state.user);
   const router = useRouter();
   // console.log(user)
 
   const handleDashboardRedirect = () => {
-    if (user.role === "recruiter") {
-      router.push("/recruiter-dashboard");
-    } else if (user.role === "job_seeker") {
-      router.push("/jobseeker-dashboard");
+    if (user.role === 'recruiter') {
+      router.push('/recruiter-dashboard');
+    } else if (user.role === 'job_seeker') {
+      router.push('/jobseeker-dashboard');
     } else {
-      router.push("/");
+      router.push('/');
     }
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md  py-4">
+    <nav className="sticky top-0 z-50 bg-white shadow-md py-4">
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link
@@ -47,11 +47,11 @@ export default function Navbar() {
           <Link href="/" className="hover:text-blue-600">
             Home
           </Link>
-          <Link href="/find-jobs" className="hover:text-blue-600">
-            Jobs
-          </Link>
           <Link href="/about" className="hover:text-blue-600">
             About
+          </Link>
+          <Link href="/find-jobs" className="hover:text-blue-600">
+            Jobs
           </Link>
           <Link href="/contact" className="hover:text-blue-600">
             Contact
@@ -75,7 +75,7 @@ export default function Navbar() {
                   src={
                     session?.user?.companyLogo ||
                     session?.user?.image ||
-                    "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
+                    'https://img.icons8.com/?size=100&id=98957&format=png&color=000000'
                   }
                   alt="user"
                   width={40}
@@ -87,7 +87,7 @@ export default function Navbar() {
 
               <button
                 onClick={() => signOut()}
-                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
+                className="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full cursor-pointer"
                 type="button"
               >
                 Logout
@@ -96,7 +96,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-3 py-1 md:py-[6px] bg-blue-600 hover:bg-blue-700 text-white rounded"
+              className="px-4 py-3 md:py-[6px] bg-blue-600 hover:bg-blue-700 text-white rounded-full cursor-pointer"
             >
               Sign In
             </Link>
@@ -113,7 +113,7 @@ export default function Navbar() {
                     className="rounded-full border p-1"
                     src={
                       session.user.image ||
-                      "https://img.icons8.com/?size=100&id=98957&format=png&color=000000"
+                      'https://img.icons8.com/?size=100&id=98957&format=png&color=000000'
                     }
                     width={40}
                     height={40}
@@ -149,13 +149,13 @@ export default function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/find-jobs" className="hover:text-blue-600">
-                    Jobs
+                  <Link href="/about" className="hover:text-blue-600">
+                    About
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/about" className="hover:text-blue-600">
-                    About
+                  <Link href="/find-jobs" className="hover:text-blue-600">
+                    Jobs
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

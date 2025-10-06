@@ -1,18 +1,13 @@
-"use client";
+'use client';
 
-import {
-  ArrowRight,
-  Building2,
-  Search,
-  TrendingUp,
-  Users,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { motion, Variants } from "framer-motion";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { useSession } from "next-auth/react";
+import { Building2, Search, TrendingUp, Users } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { useSession } from 'next-auth/react';
+import { containerVariants, itemVariants } from '@/animation/variants';
 
 interface Stat {
   icon: React.ComponentType<{ className?: string }>;
@@ -29,58 +24,34 @@ const Hero = () => {
   const stats: Stat[] = [
     {
       icon: Users,
-      label: "Active Users",
-      value: "2.4M+",
-      gradient: "from-blue-600 to-purple-600",
+      label: 'Active Users',
+      value: '2.4M+',
+      gradient: 'from-blue-600 to-purple-600',
     },
     {
       icon: Building2,
-      label: "Companies",
-      value: "50k+",
-      gradient: "from-blue-600 to-purple-600",
+      label: 'Companies',
+      value: '50k+',
+      gradient: 'from-blue-600 to-purple-600',
     },
     {
       icon: TrendingUp,
-      label: "Jobs Posted",
-      value: "150k+",
-      gradient: "from-blue-600 to-purple-600",
+      label: 'Jobs Posted',
+      value: '150k+',
+      gradient: 'from-blue-600 to-purple-600',
     },
   ];
 
   const handleFindJobs = () => {
-    router.push("/find-jobs");
+    router.push('/find-jobs');
   };
 
   const handlePostJobs = () => {
-    if (session?.user && user.role === "recruiter") {
-      router.push("/post-job");
+    if (session?.user && user.role === 'recruiter') {
+      router.push('/post-job');
     } else {
-      router.push("/login");
+      router.push('/login');
     }
-  };
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
-    },
   };
 
   return (
@@ -118,26 +89,25 @@ const Hero = () => {
             <motion.button
               whileHover={{
                 scale: 1.05,
-                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.25)",
+                boxShadow: '0 20px 40px rgba(59, 130, 246, 0.25)',
               }}
               whileTap={{ scale: 0.95 }}
               onClick={handleFindJobs}
-              className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl shadow-xl shadow-blue-500/20 transition-all duration-300 font-semibold text-lg min-w-[200px] cursor-pointer"
+              className="group flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-full shadow-xl shadow-blue-500/20 transition-all duration-300 font-semibold text-lg min-w-[200px] cursor-pointer"
             >
               <Search className="w-6 h-6 group-hover:rotate-12 transition-transform" />
               <span>Find Jobs</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.button>
 
             <motion.button
               whileHover={{
                 scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.9)",
-                borderColor: "rgba(59, 130, 246, 0.4)",
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                borderColor: 'rgba(59, 130, 246, 0.4)',
               }}
               whileTap={{ scale: 0.95 }}
               onClick={handlePostJobs}
-              className="group flex items-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-sm border-2 border-blue-200/60 hover:border-blue-300/80 text-blue-700 rounded-2xl shadow-lg shadow-blue-100/30 transition-all duration-300 font-semibold text-lg min-w-[200px] cursor-pointer"
+              className="group flex items-center gap-3 px-5 py-4 bg-white/80 backdrop-blur-sm border-2 border-blue-200/60 hover:border-blue-300/80 text-blue-700 rounded-full shadow-lg shadow-blue-100/30 transition-all duration-300 font-semibold text-lg min-w-[200px] cursor-pointer"
             >
               <Building2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
               <span>Post a Job</span>

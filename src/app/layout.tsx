@@ -8,7 +8,6 @@ import { Toaster } from "react-hot-toast";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
   display: "swap",
 });
 
@@ -30,7 +29,7 @@ export default function RootLayout({
     <html lang="en" data-theme="light">
       <NextAuthSessionProvider>
       <body
-        className={`${poppins.variable} antialiased`}
+        className={`${poppins.className} antialiased`}
       >
         <Toaster/>
         {children}
