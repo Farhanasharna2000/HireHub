@@ -1,5 +1,5 @@
-import { Facebook, Twitter, Linkedin, Mail } from "lucide-react";
-import Link from "next/link";
+import { Facebook, Twitter, Linkedin, Mail } from 'lucide-react';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -23,10 +23,10 @@ const Footer = () => {
           <h2 className="text-white text-lg font-semibold mb-5">Quick Links</h2>
           <ul className="space-y-2 text-sm">
             {[
-              { href: "/", label: "Home" },
-              { href: "/about", label: "About" },
-              { href: "/find-jobs", label: "Jobs" },
-              { href: "/contact", label: "Contact" },
+              { href: '/', label: 'Home' },
+              { href: '/about', label: 'About' },
+              { href: '/find-jobs', label: 'Jobs' },
+              { href: '/contact', label: 'Contact' },
             ].map((link) => (
               <li key={link.href}>
                 <Link
@@ -45,7 +45,7 @@ const Footer = () => {
           <h3 className="text-white text-lg font-semibold mb-5">Contact Us</h3>
           <ul className="text-sm space-y-2">
             <li>
-              <span className="font-medium">Email:</span>{" "}
+              <span className="font-medium">Email:</span>{' '}
               <Link
                 href="mailto:support@hirehub.com"
                 className="hover:text-blue-400 transition"
@@ -68,7 +68,7 @@ const Footer = () => {
           <h4 className="text-white text-lg font-semibold mb-5">
             Stay Connected
           </h4>
-          <form className="flex bg-gray-800 rounded-lg overflow-hidden mb-5">
+          <form className="flex bg-gray-800 rounded-full overflow-hidden mb-5">
             <input
               type="email"
               placeholder="Enter your email"
@@ -105,8 +105,8 @@ const Footer = () => {
 
       {/* Divider */}
       <div className="border-t border-gray-700/50 text-center py-5 text-sm text-gray-500">
-        © {new Date().getFullYear()} <span className="text-white">HireHub</span>.
-        All rights reserved.
+        © {new Date().getFullYear()}{' '}
+        <span className="text-white">HireHub</span>. All rights reserved.
       </div>
     </footer>
   );
