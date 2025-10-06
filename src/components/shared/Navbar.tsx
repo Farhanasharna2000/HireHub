@@ -47,11 +47,11 @@ export default function Navbar() {
           <Link href="/" className="hover:text-blue-600">
             Home
           </Link>
-          <Link href="/find-jobs" className="hover:text-blue-600">
-            Jobs
-          </Link>
           <Link href="/about" className="hover:text-blue-600">
             About
+          </Link>
+          <Link href="/find-jobs" className="hover:text-blue-600">
+            Jobs
           </Link>
           <Link href="/contact" className="hover:text-blue-600">
             Contact
@@ -149,13 +149,13 @@ export default function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/find-jobs" className="hover:text-blue-600">
-                    Jobs
+                  <Link href="/about" className="hover:text-blue-600">
+                    About
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/about" className="hover:text-blue-600">
-                    About
+                  <Link href="/find-jobs" className="hover:text-blue-600">
+                    Jobs
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

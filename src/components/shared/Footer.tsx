@@ -24,8 +24,8 @@ const Footer = () => {
           <ul className="space-y-2 text-sm">
             {[
               { href: "/", label: "Home" },
-              { href: "/find-jobs", label: "Jobs" },
               { href: "/about", label: "About" },
+              { href: "/find-jobs", label: "Jobs" },
               { href: "/contact", label: "Contact" },
             ].map((link) => (
               <li key={link.href}>
@@ -77,7 +77,7 @@ const Footer = () => {
             />
             <button
               type="submit"
-              className="bg-blue-600 px-4 text-white text-sm font-medium hover:bg-blue-700 transition"
+              className="bg-blue-600 hover:bg-blue-700 px-4 text-white text-sm font-medium transition"
             >
               Subscribe
             </button>
