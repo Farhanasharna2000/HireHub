@@ -3,7 +3,13 @@
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Bookmark, Briefcase, Building2, CheckCircle2, Plus } from "lucide-react";
+import {
+  Bookmark,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  Plus,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
@@ -24,7 +30,9 @@ const StatCard = ({
     purple: "from-violet-500 to-violet-600",
   };
   return (
-    <div className={`rounded-lg shadow-md p-4 bg-gradient-to-br ${colorClasses[color]} text-white`}>
+    <div
+      className={`rounded-lg shadow-md p-4 bg-gradient-to-br ${colorClasses[color]} text-white`}
+    >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm opacity-80">{title}</p>
@@ -38,12 +46,15 @@ const StatCard = ({
 
 const JobSeekerDashboard: React.FC = () => {
   const router = useRouter();
-  const [stats, setStats] = useState({ appliedJobs: 0, savedJobs: 0, interviews: 0 });
+  const [stats, setStats] = useState({
+    appliedJobs: 0,
+    savedJobs: 0,
+    interviews: 0,
+  });
   const user = useSelector((state: RootState) => state.user);
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        
         const userEmail = user.email;
 
         const res = await fetch(`/api/job-stats?userEmail=${userEmail}`);
@@ -61,9 +72,24 @@ const JobSeekerDashboard: React.FC = () => {
   }, [user.email]);
 
   const quickActions = [
-    { title: "Applied Jobs", icon: Plus, color: "bg-blue-100 text-blue-700", path: "/applied-jobs" },
-    { title: "Saved Jobs", icon: Briefcase, color: "bg-green-100 text-green-700", path: "/saved-jobs" },
-    { title: "Profile Settings", icon: Building2, color: "bg-orange-100 text-orange-700", path: "/profile" },
+    {
+      title: "Applied Jobs",
+      icon: Plus,
+      color: "bg-blue-100 text-blue-700",
+      path: "/applied-jobs",
+    },
+    {
+      title: "Saved Jobs",
+      icon: Briefcase,
+      color: "bg-green-100 text-green-700",
+      path: "/saved-jobs",
+    },
+    {
+      title: "Profile Settings",
+      icon: Building2,
+      color: "bg-orange-100 text-orange-700",
+      path: "/profile",
+    },
   ];
 
   return (
@@ -71,12 +97,27 @@ const JobSeekerDashboard: React.FC = () => {
       <div className="flex-1 overflow-y-auto space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard title="Applied Jobs" value={stats.appliedJobs} icon={Briefcase} color="blue" />
-          <StatCard title="Saved Jobs" value={stats.savedJobs} icon={Bookmark} color="green" />
-          <StatCard title="Interviews" value={stats.interviews} icon={CheckCircle2} color="purple" />
+          <StatCard
+            title="Applied Jobs"
+            value={stats.appliedJobs}
+            icon={Briefcase}
+            color="blue"
+          />
+          <StatCard
+            title="Saved Jobs"
+            value={stats.savedJobs}
+            icon={Bookmark}
+            color="green"
+          />
+          <StatCard
+            title="Interviews"
+            value={stats.interviews}
+            icon={CheckCircle2}
+            color="purple"
+          />
         </div>
 
-        {/* Quick Actions */}
+        {/*  Actions */}
         <div className="rounded-lg shadow-md border p-4">
           <h3 className="font-semibold mb-2">Quick Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

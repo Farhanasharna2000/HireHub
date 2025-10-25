@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: true, companies });
     }
 
-    //  Existing logic for fetching jobs (unchanged)
+    //  use Existing logic for fetching jobs 
     const query: Partial<Job> = {};
     if (companyName) {
       query.companyName = companyName; // filter by company
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH: Toggle saved job for a specific user
+// Toggle saved job for a specific user
 export async function PATCH(req: NextRequest) {
   try {
     const jobsCollection = await dbConnect("jobs");

@@ -20,7 +20,7 @@ import HomeLayout from "@/layouts/HomeLayout";
 import { useGetAllJobsQuery } from "@/redux/jobs/jobsApi";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
-// ------------------ Types ------------------
+// Types
 interface Filters {
   keywords: string;
   location: string;
@@ -46,7 +46,7 @@ interface FilterContentProps {
   filters: Filters;
 }
 
-// ------------------ FilterContent ------------------
+// FilterContent
 const FilterContent: React.FC<FilterContentProps> = ({
   toggleSection,
   clearAllFilters,
@@ -190,7 +190,7 @@ const FilterContent: React.FC<FilterContentProps> = ({
   );
 };
 
-// ------------------ Main Component ------------------
+//  Main Component
 const JobSeekerDashboard: React.FC = () => {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -236,7 +236,7 @@ const JobSeekerDashboard: React.FC = () => {
     });
   };
 
-  // ------------------ Mobile Filter ------------------
+  //Mobile Filter
   const MobileFilterOverlay: React.FC = () => {
     if (!showMobileFilter) return null;
     return (
@@ -272,7 +272,7 @@ const JobSeekerDashboard: React.FC = () => {
     );
   };
 
-  // ------------------ Filter Jobs by Selected Filters ------------------
+  // Filter Jobs by Selected Filters
   const filteredJobs = jobs.filter((job) => {
     if (
       filters.keywords &&

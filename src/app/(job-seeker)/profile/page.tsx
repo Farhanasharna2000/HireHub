@@ -84,14 +84,20 @@ const JobseekerProfilePage = () => {
   }, [user, setValue]);
 
   // Cloudinary uploader
-  const uploadToCloudinary = async (file: File, folder: string, type: "image" | "raw") => {
+  const uploadToCloudinary = async (
+    file: File,
+    folder: string,
+    type: "image" | "raw"
+  ) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append(
       "upload_preset",
       type === "image"
-        ? process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_PRESET || "recruiter_logo_preset"
-        : process.env.NEXT_PUBLIC_CLOUDINARY_RESUME_PRESET || "resume_upload_preset"
+        ? process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_PRESET ||
+            "recruiter_logo_preset"
+        : process.env.NEXT_PUBLIC_CLOUDINARY_RESUME_PRESET ||
+            "resume_upload_preset"
     );
     formData.append("folder", folder);
 
@@ -107,7 +113,8 @@ const JobseekerProfilePage = () => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) return toast.error("Invalid image file");
+    if (!file.type.startsWith("image/"))
+      return toast.error("Invalid image file");
     if (file.size > 5 * 1024 * 1024) return toast.error("Image too large");
 
     try {
@@ -128,7 +135,8 @@ const JobseekerProfilePage = () => {
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
-    if (!allowed.includes(file.type)) return toast.error("Invalid resume format");
+    if (!allowed.includes(file.type))
+      return toast.error("Invalid resume format");
     if (file.size > 5 * 1024 * 1024) return toast.error("Resume too large");
 
     try {
@@ -145,7 +153,9 @@ const JobseekerProfilePage = () => {
   const onSubmit = async (data: JobseekerForm) => {
     if (!session?.user?.id) return toast.error("Not authenticated");
 
-    const filteredSkills = data.skills.map((s) => s.value.trim()).filter(Boolean);
+    const filteredSkills = data.skills
+      .map((s) => s.value.trim())
+      .filter(Boolean);
     const profileData = { ...data, skills: filteredSkills };
 
     try {
@@ -164,7 +174,7 @@ const JobseekerProfilePage = () => {
       toast.error("Something went wrong");
     }
   };
-  
+
   return (
     <DashboardLayout activeMenu="profile">
       {isLoading ? (
@@ -238,9 +248,7 @@ const JobseekerProfilePage = () => {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="block font-medium mb-2">
-                      Username *
-                    </label>
+                    <label className="block font-medium mb-2">Username *</label>
                     <input
                       {...register("username", {
                         required: "Full name is required",
@@ -310,7 +318,9 @@ const JobseekerProfilePage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
-                      onClick={() => console.log("Opening resume URL:", existingResumeUrl)}
+                      onClick={() =>
+                        console.log("Opening resume URL:", existingResumeUrl)
+                      }
                     >
                       View Current Resume
                     </a>
@@ -346,7 +356,9 @@ const JobseekerProfilePage = () => {
                     </div>
                     <div className="text-center text-gray-500">OR</div>
                     <div>
-                      <label className="block font-medium mb-2">Resume URL</label>
+                      <label className="block font-medium mb-2">
+                        Resume URL
+                      </label>
                       <input
                         {...register("resumeUrl")}
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
