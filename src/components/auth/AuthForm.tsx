@@ -12,8 +12,6 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/features/user/userSlice";
 import Link from "next/link";
 import Image from "next/image";
-import Footer from "../shared/Footer";
-import Navbar from "../shared/Navbar";
 import HomeLayout from "@/layouts/HomeLayout";
 
 interface AuthFormProps {
