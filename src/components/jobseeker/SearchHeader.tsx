@@ -63,7 +63,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({ filters, handleFilterChange
             <Button
               size="lg"
               type="submit"
-              className="w-full lg:w-auto h-14 px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              className="w-full lg:w-auto h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
               <Search className="w-5 h-5 mr-2" />
               Search Jobs

@@ -131,7 +131,7 @@ const ContactPage: React.FC = () => {
 
               <button
                 onClick={handleSubmit}
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-blue-700 transition duration-200 flex items-center justify-center"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-md font-semibold  transition duration-200 flex items-center justify-center"
               >
                 <Send className="w-5 h-5 mr-2" />
                 Send Message
