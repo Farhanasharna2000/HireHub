@@ -187,10 +187,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   return (
     <>
       <HomeLayout>
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="max-w-5xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 bg-white rounded-xl shadow overflow-hidden">
+        <div className=" py-10 lg:py-20 ">
+          <div className="max-w-5xl w-11/12 mx-auto grid grid-cols-1 lg:grid-cols-2 bg-white rounded-xl shadow overflow-hidden p-6 md:p-10">
             {/* LEFT IMAGE */}
-            <div className="relative hidden md:block">
+            <div className="relative hidden md:block ">
               <Image
                 src={type === "register" ? "/signup.png" : "/login.png"}
                 alt="Auth Banner"
@@ -240,8 +240,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="flex items-center gap-3">
+                      <label className="block text-sm font-medium text-gray-700 ">
                         I am a:
                       </label>
                       <div className="flex items-center gap-4">
