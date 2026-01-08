@@ -122,7 +122,7 @@ const Hero = () => {
               }}
               whileTap={{ scale: 0.95 }}
               onClick={handleFindJobs}
-              className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl shadow-xl shadow-blue-500/20 transition-all duration-300 font-semibold text-lg min-w-[200px] cursor-pointer"
+              className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl shadow-xl shadow-blue-500/20 transition-all duration-300 font-semibold text-lg min-w-[200px] cursor-pointer"
             >
               <Search className="w-6 h-6 group-hover:rotate-12 transition-transform" />
               <span>Find Jobs</span>
