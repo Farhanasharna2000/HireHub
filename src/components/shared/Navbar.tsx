@@ -103,7 +103,7 @@ export default function Navbar() {
 
               <button
                 onClick={() => signOut()}
-                className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded cursor-pointer"
                 type="button"
               >
                 Logout
@@ -112,7 +112,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-3 py-1 md:py-[6px] bg-blue-600 hover:bg-blue-700 text-white rounded"
+              className="px-4 py-2 md:py-[6px] bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded"
             >
               Sign In
             </Link>

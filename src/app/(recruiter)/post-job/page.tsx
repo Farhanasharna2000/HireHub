@@ -239,7 +239,7 @@ try {
           <button
             type="submit"
             disabled={!isValid || isLoading}
-            className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg  disabled:opacity-50"
           >
             {isLoading ? "Posting..." : "Post Job"}
           </button>

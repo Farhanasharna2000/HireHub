@@ -386,7 +386,7 @@ const CompanyProfilePage = () => {
                 type="button"
                 onClick={handleSubmit(onSubmit)}
                 disabled={isSubmitting}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 px-12 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-3"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-4 px-12 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-3"
               >
                 {isSubmitting ? (
                   <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
