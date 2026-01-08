@@ -14,10 +14,8 @@ const Features = () => {
             </span>
           </div>
 
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-none">
-            <span className="block text-slate-900">
-              Everything You Need To
-            </span>
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+            <span className="block text-slate-900">Everything You Need To</span>
             <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent relative">
               Succeed
             </span>
@@ -38,11 +36,18 @@ const Features = () => {
               <div className="w-16 mx-auto h-1 bg-blue-600 mt-2"></div>
             </div>
 
-            <div className="space-y-6">
+            {/* <div className="space-y-6">
               {jobSeekersFeatures?.map((feature, index) => (
                 <div
                   key={index}
                   className="group relative p-6 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-50 hover:border-blue-300 transition-all duration-500 hover:shadow-lg hover:shadow-blue-100/50"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                > */}
+            <div className="grid gap-6 auto-rows-fr">
+              {jobSeekersFeatures?.map((feature, index) => (
+                <div
+                  key={index}
+                  className="group relative p-6 bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-50 hover:border-blue-300 transition-all duration-500 hover:shadow-lg hover:shadow-blue-100/50 h-full flex flex-col"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex items-center gap-5">
@@ -74,11 +79,18 @@ const Features = () => {
               <div className="w-16 h-1 mx-auto bg-purple-600 mt-2"></div>
             </div>
 
-            <div className="space-y-6">
+            {/* <div className="space-y-6">
               {recruiterFeatures?.map((feature, index) => (
                 <div
                   key={index}
                   className="group relative p-6 bg-gradient-to-l from-blue-50 to-white border border-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-50 hover:border-blue-300 transition-all duration-500 hover:shadow-lg hover:shadow-blue-100/50"
+                  style={{ animationDelay: `${(index + 3) * 0.1}s` }}
+                > */}
+            <div className="grid gap-6 auto-rows-fr">
+              {recruiterFeatures?.map((feature, index) => (
+                <div
+                  key={index}
+                  className="group relative p-6 bg-gradient-to-l from-blue-50 to-white border border-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-50 hover:border-blue-300 transition-all duration-500 hover:shadow-lg hover:shadow-blue-100/50 h-full flex flex-col"
                   style={{ animationDelay: `${(index + 3) * 0.1}s` }}
                 >
                   <div className="flex items-center gap-5">

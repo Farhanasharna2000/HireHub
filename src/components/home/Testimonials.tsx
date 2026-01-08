@@ -140,8 +140,8 @@ const Testimonials: React.FC = () => {
     testimonial,
   }) => (
     <div
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border
-     border-gray-100 min-w-[300px] md:min-w-[390px] mx-3 hover:scale-105"
+      className="bg-white rounded-xl p-6 border
+     border-gray-100 min-w-[300px] md:min-w-[390px] mx-3 "
     >
       {/* Quote Icon */}
       <div className="flex justify-between items-start mb-4">

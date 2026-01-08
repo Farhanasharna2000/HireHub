@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,9 @@ import {
 import { RootState } from "@/redux/store";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  const isActive = (path: string) => (pathname === path ? "text-blue-600" : "");
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
   const user = useSelector((state: RootState) => state.user);
@@ -32,7 +35,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md  py-4">
+    <nav className="sticky top-0 z-50 bg-white shadow-md  py-5">
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link
@@ -44,18 +47,31 @@ export default function Navbar() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex flex-1 justify-center gap-6 text-lg font-medium">
-          <Link href="/" className="hover:text-blue-600">
+          <Link href="/" className={`hover:text-blue-600 ${isActive("/")}`}>
             Home
           </Link>
-          <Link href="/find-jobs" className="hover:text-blue-600">
+
+          <Link
+            href="/find-jobs"
+            className={`hover:text-blue-600 ${isActive("/find-jobs")}`}
+          >
             Jobs
           </Link>
-          <Link href="/about" className="hover:text-blue-600">
+
+          <Link
+            href="/about"
+            className={`hover:text-blue-600 ${isActive("/about")}`}
+          >
             About
           </Link>
-          <Link href="/contact" className="hover:text-blue-600">
+
+          <Link
+            href="/contact"
+            className={`hover:text-blue-600 ${isActive("/contact")}`}
+          >
             Contact
           </Link>
+
           {!isLoading && session?.user && (
             <button
               onClick={handleDashboardRedirect}
