@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { Star, Quote, Briefcase, Users } from "lucide-react";
+import Image from "next/image";
 
 interface Testimonial {
   id: number;
@@ -23,7 +24,8 @@ const testimonials: Testimonial[] = [
       "HireHub has revolutionized our hiring process. We've reduced our time-to-hire by 60% and found incredibly talented candidates. The platform's filtering system is exceptional.",
     rating: 5,
     userType: "recruiter",
-    avatar: "SJ",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 2,
@@ -33,18 +35,20 @@ const testimonials: Testimonial[] = [
       "I found my dream job through HireHub in just 2 weeks! The job matching algorithm is spot-on, and the application process is so smooth. Highly recommend to fellow developers.",
     rating: 5,
     userType: "jobseeker",
-    avatar: "MC",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 3,
     name: "Emily Rodriguez",
-    role: "Talent  Manager",
+    role: "Talent Manager",
     company: "Global Innovations Inc",
     testimonial:
       "The quality of candidates on HireHub is outstanding. We've hired 15 employees through the platform this year, and each one has been a perfect fit for our company culture.",
     rating: 5,
     userType: "recruiter",
-    avatar: "ER",
+    avatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 4,
@@ -54,7 +58,8 @@ const testimonials: Testimonial[] = [
       "After months of job searching, HireHub connected me with my current role at an amazing startup. The personalized job recommendations made all the difference!",
     rating: 5,
     userType: "jobseeker",
-    avatar: "DT",
+    avatar:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 5,
@@ -65,7 +70,8 @@ const testimonials: Testimonial[] = [
       "HireHub's analytics dashboard helps us track our hiring metrics and optimize our job postings. It's like having a recruitment consultant built into the platform.",
     rating: 5,
     userType: "recruiter",
-    avatar: "LP",
+    avatar:
+      "https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 6,
@@ -75,7 +81,8 @@ const testimonials: Testimonial[] = [
       "The portfolio showcase feature on HireHub helped me stand out from other candidates. I received multiple interview requests within days of creating my profile!",
     rating: 5,
     userType: "jobseeker",
-    avatar: "JW",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 7,
@@ -86,7 +93,8 @@ const testimonials: Testimonial[] = [
       "The candidate screening tools save us hours every week. We can quickly identify the best matches and focus our time on meaningful interviews.",
     rating: 5,
     userType: "recruiter",
-    avatar: "RK",
+    avatar:
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: 8,
@@ -96,9 +104,11 @@ const testimonials: Testimonial[] = [
       "HireHub's skill assessment feature helped me showcase my abilities beyond just my resume. Landed three interviews in my first week!",
     rating: 5,
     userType: "jobseeker",
-    avatar: "AM",
+    avatar:
+      "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=200&q=80",
   },
 ];
+
 
 const Testimonials: React.FC = () => {
   const renderStars = (rating: number) => {
@@ -161,9 +171,19 @@ const Testimonials: React.FC = () => {
 
       {/* User Info */}
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+        {/* <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
           {testimonial.avatar}
-        </div>
+        </div> */}
+<div className="relative w-14 h-14 md:w-20 md:h-20">
+  <Image
+    src={testimonial.avatar}
+    alt={testimonial.name}
+    fill
+    className="rounded-full object-cover border border-gray-200"
+  />
+</div>
+
+
         <div>
           <div className="font-semibold text-gray-900">{testimonial.name}</div>
           <div className="text-sm text-gray-600">
