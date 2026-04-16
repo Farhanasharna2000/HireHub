@@ -93,6 +93,15 @@ getAppliedJobs: builder.query<AppliedJobsResponse, string>({
       query: (id) => ({ url: `jobs?id=${id}`, method: "DELETE" }),
       invalidatesTags: ["Jobs"],
     }),
+
+    updateJob: builder.mutation<JobResponse, { id: string; jobData: JobFormInputs }>({
+      query: ({ id, jobData }) => ({
+        url: `jobs?id=${id}`,
+        method: "PUT",
+        body: { id, jobData },
+      }),
+      invalidatesTags: ["Jobs"],
+    }),
   }),
 });
 
@@ -105,4 +114,5 @@ export const {
   useToggleSavedJobMutation,
   useApplyJobMutation,
   useGetAppliedJobsQuery,
+  useUpdateJobMutation,
 } = jobsApi;

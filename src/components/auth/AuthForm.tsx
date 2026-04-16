@@ -382,7 +382,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                 <button
                   type="submit"
                   disabled={uploadingLogo}
-                  className="w-full bg-blue-600 text-white py-2 cursor-pointer rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 cursor-pointer rounded  transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {uploadingLogo
                     ? "Uploading..."

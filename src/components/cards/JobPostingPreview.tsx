@@ -18,6 +18,9 @@ interface JobPostingPreviewProps {
   salaryMin?: string;
   salaryMax?: string;
   onEdit: () => void;
+  onSubmit?: () => void;
+  isEdit?: boolean;
+  isLoading?: boolean;
 }
 
 const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
@@ -30,6 +33,9 @@ const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
   salaryMin,
   salaryMax,
   onEdit,
+  onSubmit,
+  isEdit = false,
+  isLoading = false,
 }) => {
   return (
     <div className="min-h-screen ">
@@ -129,6 +135,29 @@ const JobPostingPreview: React.FC<JobPostingPreviewProps> = ({
                 {requirements}
               </p>
             </section>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+              <button
+                onClick={onEdit}
+                className="flex-1 px-6 py-3 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300"
+              >
+                Back to Edit
+              </button>
+              <button
+                onClick={onSubmit}
+                disabled={isLoading}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+              >
+                {isLoading
+                  ? isEdit
+                    ? "Updating..."
+                    : "Posting..."
+                  : isEdit
+                    ? "Save Changes"
+                    : "Post Job"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

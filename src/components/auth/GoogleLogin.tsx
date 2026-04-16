@@ -13,7 +13,7 @@ const GoogleLogin = () => {
   const dispatch = useDispatch();
 
   const handleGoogleLogin = () => {
-    signIn("google");
+    signIn("google", { callbackUrl: "/" });
   };
 
   useEffect(() => {
