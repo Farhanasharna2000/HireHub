@@ -143,11 +143,12 @@ export async function PUT(req: NextRequest) {
   try {
     const jobsCollection = await dbConnect("jobs");
     const usersCollection = await dbConnect("users");
-    const { id, userEmail, availability, resume } = await req.json();
+    const body = await req.json();
+    const { id, userEmail, availability, resume, jobData } = body;
 
-    if (!id || !userEmail) {
+    if (!id) {
       return NextResponse.json(
-        { success: false, error: "Missing job id or user email" },
+        { success: false, error: "Missing job id" },
         { status: 400 }
       );
     }
@@ -164,6 +165,38 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Job not found" },
         { status: 404 }
+      );
+    }
+
+    // Handle full job update (from recruiter edit)
+    if (jobData) {
+      const { jobTitle, location, category, jobType, description, requirements, salaryMin, salaryMax } = jobData;
+
+      const updateFields = {
+        ...(jobTitle && { jobTitle }),
+        ...(location && { location }),
+        ...(category && { category }),
+        ...(jobType && { jobType }),
+        ...(description && { description }),
+        ...(requirements && { requirements }),
+        ...(salaryMin && { salaryMin }),
+        ...(salaryMax && { salaryMax }),
+        updatedAt: new Date(),
+      };
+
+      await jobsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updateFields }
+      );
+
+      return NextResponse.json({ success: true, id });
+    }
+
+    // Handle job application (from job seeker)
+    if (!userEmail) {
+      return NextResponse.json(
+        { success: false, error: "Missing job id or user email" },
+        { status: 400 }
       );
     }
 
@@ -223,9 +256,9 @@ export async function PUT(req: NextRequest) {
       appliedUsers: updatedAppliedUsers,
     });
   } catch (error) {
-    console.error("Failed to apply job:", error);
+    console.error("Failed to update/apply job:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to apply job" },
+      { success: false, error: "Failed to update job" },
       { status: 500 }
     );
   }

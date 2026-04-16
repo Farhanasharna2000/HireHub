@@ -3,11 +3,11 @@
 import JobPostingPreview from "@/components/cards/JobPostingPreview";
 import { CATEGORIES, JOB_TYPES } from "@/constants/features";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { useCreateJobMutation } from "@/redux/jobs/jobsApi";
+import { useCreateJobMutation, useGetAllJobsQuery, useUpdateJobMutation } from "@/redux/jobs/jobsApi";
 import { RootState } from "@/redux/store";
 import { Eye } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Path, UseFormRegister } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -97,36 +97,74 @@ const SelectField = <T extends object>({
 
 const JobPostingForm: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editJobId = searchParams.get("edit");
+  const isEditMode = !!editJobId;
+
   const [isPreview, setIsPreview] = useState(false);
- const [createJob, { isLoading }] = useCreateJobMutation();
-const user = useSelector((state: RootState) => state.user);
+  const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+  const [updateJob, { isLoading: isUpdating }] = useUpdateJobMutation();
+  const { data: jobsData } = useGetAllJobsQuery();
+
+  const user = useSelector((state: RootState) => state.user);
+  const isLoading = isCreating || isUpdating;
+
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isValid },
   } = useForm<JobFormInputs>({ mode: "onChange" });
+
+  // Find job to edit and populate form
+  useEffect(() => {
+    if (isEditMode && jobsData?.jobs) {
+      const jobToEdit = jobsData.jobs.find((job) => job._id === editJobId);
+      if (jobToEdit) {
+        reset({
+          jobTitle: jobToEdit.jobTitle || "",
+          location: jobToEdit.location || "",
+          category: jobToEdit.category || "",
+          jobType: jobToEdit.jobType || "",
+          description: jobToEdit.description || "",
+          requirements: jobToEdit.requirements || "",
+          salaryMin: jobToEdit.salaryMin || "",
+          salaryMax: jobToEdit.salaryMax || "",
+        });
+      }
+    }
+  }, [isEditMode, editJobId, jobsData, reset]);
 
   const formData = watch();
 
 const onSubmit: SubmitHandler<JobFormInputs> = async (data) => {
-try {
-    const newjobdata = {
-      ...data,
-      status: "Active",                
-      applicants: 0,
-      isApplied:false,           
-      companyName: user?.companyName,
-      companyLogo: user?.companyLogo,  
+    try {
+      const jobData = {
+        ...data,
+        status: "Active",
+        applicants: 0,
+        isApplied: false,
+        companyName: user?.companyName,
+        companyLogo: user?.companyLogo,
+      };
 
-    };
-      const result = await createJob(newjobdata).unwrap(); 
-
-      if (result.success) {
-        toast.success("Job posted successfully!");
-        router.push("/manage-jobs");
+      if (isEditMode && editJobId) {
+        const result = await updateJob({ id: editJobId, jobData }).unwrap();
+        if (result.success) {
+          toast.success("Job updated successfully!");
+          router.push("/manage-jobs");
+        } else {
+          toast.error(result.error || "Failed to update job.");
+        }
       } else {
-        toast.error(result.error || "Failed to post job.");
+        const result = await createJob(jobData).unwrap();
+        if (result.success) {
+          toast.success("Job posted successfully!");
+          router.push("/manage-jobs");
+        } else {
+          toast.error(result.error || "Failed to post job.");
+        }
       }
     } catch {
       toast.error("Network error.");
@@ -135,20 +173,26 @@ try {
 
   if (isPreview) {
     return (
-      <DashboardLayout activeMenu="post-job">
-        <JobPostingPreview {...formData} onEdit={() => setIsPreview(false)} />
+      <DashboardLayout activeMenu={isEditMode ? "manage-jobs" : "post-job"}>
+        <JobPostingPreview
+          {...formData}
+          onEdit={() => setIsPreview(false)}
+          onSubmit={handleSubmit(onSubmit)}
+          isEdit={isEditMode}
+          isLoading={isLoading}
+        />
       </DashboardLayout>
     );
   }
 
   return (
-    <DashboardLayout activeMenu="post-job">
+    <DashboardLayout activeMenu={isEditMode ? "manage-jobs" : "post-job"}>
       <div className="container mx-auto p-6 bg-white rounded-lg shadow">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold">Post a New Job</h2>
-            <p className="text-gray-600">Fill out the form below to create your job posting</p>
+            <h2 className="text-2xl font-bold">{isEditMode ? "Edit Job" : "Post a New Job"}</h2>
+            <p className="text-gray-600">{isEditMode ? "Update your job posting details" : "Fill out the form below to create your job posting"}</p>
           </div>
           <button
             type="button"
@@ -241,7 +285,13 @@ try {
             disabled={!isValid || isLoading}
             className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-lg  disabled:opacity-50"
           >
-            {isLoading ? "Posting..." : "Post Job"}
+            {isLoading
+              ? isEditMode
+                ? "Saving..."
+                : "Posting..."
+              : isEditMode
+                ? "Save Changes"
+                : "Post Job"}
           </button>
         </form>
       </div>

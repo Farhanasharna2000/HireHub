@@ -344,9 +344,11 @@ export default function JobManagementDashboard() {
                             </button>
                           </div>
                           <div className="col-span-4 flex items-center gap-3">
-                            <button className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 hover:scale-110">
-                              <Edit className="w-4 h-4" />
-                            </button>
+                            <Link href={`/post-job?edit=${job._id}`}>
+                              <button className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 hover:scale-110">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            </Link>
                             {job.status === "Active" ? (
                               <button
                                 onClick={() =>
