@@ -1,0 +1,91 @@
+{
+    "data": {
+        "id": 2,
+        "uuid": null,
+        "code": null,
+        "form_template_id": 1,
+        "phase_id": "veteran_information",
+        "order_index": 2,
+        "title": "Veteran Information",
+        "description": "Personal identification and demographic details",
+        "estimated_time_minutes": 5,
+        "is_required": true,
+        "phase_config": {
+            "fields": [
+                {
+                    "name": "first_name",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "name": "middle_name",
+                    "type": "text",
+                    "required": false
+                },
+                {
+                    "name": "last_name",
+                    "type": "text",
+                    "required": true
+                },
+                {
+                    "name": "ssn",
+                    "type": "ssn",
+                    "required": true,
+                    "sensitive": true
+                },
+                {
+                    "name": "date_of_birth",
+                    "type": "date",
+                    "required": true
+                },
+                {
+                    "name": "place_of_birth",
+                    "type": "text",
+                    "required": false
+                },
+                {
+                    "name": "email",
+                    "type": "email",
+                    "required": true
+                },
+                {
+                    "name": "phone",
+                    "type": "tel",
+                    "required": true
+                },
+                {
+                    "name": "phone_alt",
+                    "type": "tel",
+                    "required": false
+                },
+                {
+                    "name": "mailing_address",
+                    "type": "address",
+                    "required": true
+                }
+            ],
+            "prefill_sources": [
+                "veterans_table",
+                "login_gov",
+                "lead_capture"
+            ]
+        },
+        "validation_rules": {
+            "ssn": "required|regex:/^\\d{3}-\\d{2}-\\d{4}$/",
+            "email": "required|email",
+            "phone": "required|regex:/^\\d{3}-\\d{3}-\\d{4}$/",
+            "last_name": "required|string|max:100",
+            "first_name": "required|string|max:100",
+            "date_of_birth": "required|date|before:today"
+        },
+        "created_by": null,
+        "updated_by": null,
+        "deleted_by": null,
+        "created_at": "2026-04-20T04:00:23.000000Z",
+        "updated_at": "2026-04-20T04:00:23.000000Z",
+        "deleted_at": null
+    },
+    "message": "FormPhase Fetched successfully",
+    "status": "success",
+    "code": 200
+}
